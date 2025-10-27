@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample IFC 3D Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web-ifc-three@0.0.125/IFCLoader.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+        
+        #viewer-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1000;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .control-button {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .control-button:hover {
+            background: #0056b3;
+        }
+        
+        #info {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            max-width: 300px;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="viewer-container">
+        <div id="loading">
+            <div class="loading-spinner"></div>
+            <div>Loading IFC Model...</div>
+        </div>
+        
+        <div id="controls">
+            <h4 style="margin: 0 0 10px 0;">Controls</h4>
+            <button class="control-button" onclick="resetView()">Reset View</button>
+            <button class="control-button" onclick="toggleWireframe()">Toggle Wireframe</button>
+            <button class="control-button" onclick="fitToView()">Fit to View</button>
+            <button class="control-button" onclick="toggleFullscreen()">Fullscreen</button>
+            <button class="control-button" onclick="exportScreenshot()">Screenshot</button>
+        </div>
+        
+        <div id="info">
+            <strong>Navigation:</strong><br>
+            • Left Click + Drag: Rotate<br>
+            • Right Click + Drag: Pan<br>
+            • Scroll: Zoom<br>
+            • Double Click: Focus element
+        </div>
+    </div>
+
+    <script>
+        class IFCViewer {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.controls = null;
+                this.loader = null;
+                this.model = null;
+                this.wireframeMode = false;
+                this.init();
+            }
+
+            init() {
+                this.setupScene();
+                this.setupCamera();
+                this.setupRenderer();
+                this.setupControls();
+                this.setupLighting();
+                this.setupLoader();
+                this.setupEventListeners();
+                this.animate();
+                this.loadModel();
+            }
+
+            setupScene() {
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0xf0f0f0);
+                
+                // Add grid
+                const gridHelper = new THREE.GridHelper(50, 50, 0x888888, 0xcccccc);
+                this.scene.add(gridHelper);
+            }
+
+            setupCamera() {
+                const container = document.getElementById('viewer-container');
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    container.clientWidth / container.clientHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.set(10, 10, 10);
+            }
+
+            setupRenderer() {
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                document.getElementById('viewer-container').appendChild(this.renderer.domElement);
+            }
+
+            setupControls() {
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+                this.controls.enableZoom = true;
+                this.controls.enablePan = true;
+                this.controls.enableRotate = true;
+            }
+
+            setupLighting() {
+                // Ambient light
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+                this.scene.add(ambientLight);
+
+                // Directional light
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(10, 10, 5);
+                directionalLight.castShadow = true;
+                directionalLight.shadow.mapSize.width = 2048;
+                directionalLight.shadow.mapSize.height = 2048;
+                this.scene.add(directionalLight);
+
+                // Additional lights for better visibility
+                const light1 = new THREE.DirectionalLight(0xffffff, 0.3);
+                light1.position.set(-10, 10, -5);
+                this.scene.add(light1);
+
+                const light2 = new THREE.DirectionalLight(0xffffff, 0.3);
+                light2.position.set(0, -10, 10);
+                this.scene.add(light2);
+            }
+
+            setupLoader() {
+                // For demonstration, we'll create a simple building geometry
+                // In practice, you would use IFCLoader for actual IFC files
+                this.createSampleBuilding();
+            }
+
+            createSampleBuilding() {
+                // Create a simple building structure as a placeholder
+                const buildingGroup = new THREE.Group();
+
+                // Foundation
+                const foundationGeometry = new THREE.BoxGeometry(20, 1, 15);
+                const foundationMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+                const foundation = new THREE.Mesh(foundationGeometry, foundationMaterial);
+                foundation.position.y = -0.5;
+                buildingGroup.add(foundation);
+
+                // Walls
+                const wallMaterial = new THREE.MeshLambertMaterial({ color: 0xD2B48C });
+                
+                // Front and back walls
+                const wallGeometry1 = new THREE.BoxGeometry(20, 8, 0.5);
+                const frontWall = new THREE.Mesh(wallGeometry1, wallMaterial);
+                frontWall.position.set(0, 4, 7.25);
+                buildingGroup.add(frontWall);
+
+                const backWall = new THREE.Mesh(wallGeometry1, wallMaterial);
+                backWall.position.set(0, 4, -7.25);
+                buildingGroup.add(backWall);
+
+                // Side walls
+                const wallGeometry2 = new THREE.BoxGeometry(0.5, 8, 15);
+                const leftWall = new THREE.Mesh(wallGeometry2, wallMaterial);
+                leftWall.position.set(-9.75, 4, 0);
+                buildingGroup.add(leftWall);
+
+                const rightWall = new THREE.Mesh(wallGeometry2, wallMaterial);
+                rightWall.position.set(9.75, 4, 0);
+                buildingGroup.add(rightWall);
+
+                // Roof
+                const roofGeometry = new THREE.BoxGeometry(21, 0.5, 16);
+                const roofMaterial = new THREE.MeshLambertMaterial({ color: 0x654321 });
+                const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+                roof.position.y = 8.25;
+                buildingGroup.add(roof);
+
+                // Windows
+                const windowMaterial = new THREE.MeshLambertMaterial({ 
+                    color: 0x87CEEB, 
+                    transparent: true, 
+                    opacity: 0.7 
+                });
+                
+                for (let i = -6; i <= 6; i += 4) {
+                    const windowGeometry = new THREE.BoxGeometry(2, 3, 0.1);
+                    const window1 = new THREE.Mesh(windowGeometry, windowMaterial);
+                    window1.position.set(i, 3, 7.3);
+                    buildingGroup.add(window1);
+
+                    const window2 = new THREE.Mesh(windowGeometry, windowMaterial);
+                    window2.position.set(i, 3, -7.3);
+                    buildingGroup.add(window2);
+                }
+
+                // Door
+                const doorGeometry = new THREE.BoxGeometry(2, 6, 0.1);
+                const doorMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+                const door = new THREE.Mesh(doorGeometry, doorMaterial);
+                door.position.set(0, 3, 7.3);
+                buildingGroup.add(door);
+
+                this.model = buildingGroup;
+                this.scene.add(buildingGroup);
+                
+                this.hideLoading();
+                this.fitToView();
+            }
+
+            async loadModel() {
+                // This would be used for actual IFC files
+                // For now, we're using the sample building
+                try {
+                    // const url = 'path/to/your/model.ifc';
+                    // const model = await this.loader.loadAsync(url);
+                    // this.model = model;
+                    // this.scene.add(model);
+                    // this.fitToView();
+                    // this.hideLoading();
+                } catch (error) {
+                    console.error('Error loading IFC model:', error);
+                    this.showError('Failed to load IFC model. Using sample building instead.');
+                }
+            }
+
+            hideLoading() {
+                const loading = document.getElementById('loading');
+                if (loading) {
+                    loading.style.display = 'none';
+                }
+            }
+
+            showError(message) {
+                const loading = document.getElementById('loading');
+                if (loading) {
+                    loading.innerHTML = `<div class="error-message">${message}</div>`;
+                }
+            }
+
+            setupEventListeners() {
+                window.addEventListener('resize', () => this.onWindowResize());
+                
+                // Keyboard shortcuts
+                window.addEventListener('keydown', (event) => {
+                    switch(event.code) {
+                        case 'KeyR':
+                            this.resetView();
+                            break;
+                        case 'KeyW':
+                            this.toggleWireframe();
+                            break;
+                        case 'KeyF':
+                            this.toggleFullscreen();
+                            break;
+                        case 'Escape':
+                            if (document.fullscreenElement) {
+                                document.exitFullscreen();
+                            }
+                            break;
+                    }
+                });
+            }
+
+            onWindowResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                this.controls.update();
+                this.renderer.render(this.scene, this.camera);
+            }
+
+            resetView() {
+                this.camera.position.set(10, 10, 10);
+                this.camera.lookAt(0, 0, 0);
+                this.controls.reset();
+            }
+
+            toggleWireframe() {
+                this.wireframeMode = !this.wireframeMode;
+                
+                if (this.model) {
+                    this.model.traverse((child) => {
+                        if (child.isMesh && child.material) {
+                            child.material.wireframe = this.wireframeMode;
+                        }
+                    });
+                }
+            }
+
+            fitToView() {
+                if (this.model) {
+                    const box = new THREE.Box3().setFromObject(this.model);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+                    
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const fov = this.camera.fov * (Math.PI / 180);
+                    let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+                    
+                    cameraZ *= 1.5; // Add some padding
+                    
+                    this.camera.position.set(center.x + cameraZ, center.y + cameraZ, center.z + cameraZ);
+                    this.camera.lookAt(center);
+                    this.controls.target.copy(center);
+                    this.controls.update();
+                }
+            }
+
+            toggleFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+
+            exportScreenshot() {
+                const link = document.createElement('a');
+                link.download = 'ifc-model-screenshot.png';
+                link.href = this.renderer.domElement.toDataURL();
+                link.click();
+            }
+        }
+
+        // Global functions for button controls
+        let viewer;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            viewer = new IFCViewer();
+        });
+
+        function resetView() {
+            if (viewer) viewer.resetView();
+        }
+
+        function toggleWireframe() {
+            if (viewer) viewer.toggleWireframe();
+        }
+
+        function fitToView() {
+            if (viewer) viewer.fitToView();
+        }
+
+        function toggleFullscreen() {
+            if (viewer) viewer.toggleFullscreen();
+        }
+
+        function exportScreenshot() {
+            if (viewer) viewer.exportScreenshot();
+        }
+
+        // Communicate with parent window
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.action) {
+                switch (event.data.action) {
+                    case 'reset':
+                        resetView();
+                        break;
+                    case 'wireframe':
+                        toggleWireframe();
+                        break;
+                    case 'fit':
+                        fitToView();
+                        break;
+                }
+            }
+        });
+
+        // Notify parent that graph is loaded
+        window.addEventListener('load', function() {
+            if (window.parent) {
+                window.parent.postMessage({ action: 'graphLoaded' }, '*');
+            }
+        });
+    </script>
+</body>
+</html>

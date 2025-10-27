@@ -1,0 +1,76 @@
+# Architectural Dataset Documentation
+
+## Overview
+This document provides comprehensive guidelines for using the architectural dataset.
+
+## Table of Contents
+1. Introduction
+2. Data Collection Methodology
+3. Data Fields and Descriptions
+4. Quality Assurance
+5. Usage Guidelines
+6. Citation Requirements
+7. Contact Information
+
+## 1. Introduction
+The Architectural Dataset Project provides comprehensive measurements and metadata for over 1,000 architectural structures worldwide.
+
+## 2. Data Collection Methodology
+- Field measurements using precision instruments
+- Photogrammetry and 3D scanning techniques
+- Historical research and documentation review
+- Expert validation and quality control
+
+## 3. Data Fields and Descriptions
+
+### Structural Information
+- **building_id**: Unique identifier for each structure
+- **height_m**: Building height in meters
+- **width_m**: Building width in meters
+- **depth_m**: Building depth in meters
+- **floor_area_sqm**: Total floor area in square meters
+- **volume_cum**: Building volume in cubic meters
+- **structural_material**: Primary structural material
+- **foundation_type**: Type of foundation system
+
+### Historical Context
+- **construction_date**: Year of construction
+- **architectural_style**: Classification of architectural style
+- **architect**: Name of architect/designer (if known)
+- **historical_significance**: Description of historical importance
+- **heritage_status**: Official heritage protection status
+
+### Geographic Information
+- **latitude**: Geographic latitude (decimal degrees)
+- **longitude**: Geographic longitude (decimal degrees)
+- **country**: Country location
+- **city**: City location
+- **address**: Street address (if available)
+- **climate_zone**: Köppen climate classification
+
+## 4. Quality Assurance
+All data has been validated through:
+- Cross-referencing with official records
+- Expert review by architectural historians
+- Measurement verification using multiple sources
+- Regular updates and corrections
+
+## 5. Usage Guidelines
+- Always cite the dataset in your publications
+- Validate data against your specific requirements
+- Report any errors or inconsistencies
+- Respect copyright and intellectual property rights
+
+## 6. Citation Requirements
+Please use the following citation format:
+
+**APA Style:**
+Research Team. (2025). Comprehensive Architectural Dataset [Data set]. Architectural Dataset Project. https://example.com/dataset
+
+## 7. Contact Information
+- **General Inquiries:** contact@example.com
+- **Data Support:** data-support@example.com
+- **Technical Issues:** technical@example.com
+
+---
+*This is a placeholder documentation file. Replace with your actual dataset documentation.*

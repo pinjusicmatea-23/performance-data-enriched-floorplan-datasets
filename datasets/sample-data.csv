@@ -1,0 +1,28 @@
+# Sample Architectural Dataset
+
+This is a sample dataset file. Replace this with your actual architectural data.
+
+## Dataset Information
+- **Total Records:** 1,000+ architectural structures
+- **Data Fields:** 50+ attributes per structure
+- **Geographic Coverage:** 15 countries
+- **Time Period:** 500+ years of architectural history
+
+## File Contents
+- Building dimensions and measurements
+- Structural materials and composition
+- Historical context and significance
+- Geographic coordinates and location data
+- Technical specifications and assessments
+
+## Usage
+Please refer to the Data Usage page on the website for proper citation guidelines and terms of use.
+
+For the actual dataset, this file should be replaced with:
+- CSV files with the architectural data
+- JSON files with structured metadata
+- ZIP archives containing multiple data files
+- PDF documentation with data dictionary
+
+## Contact
+For questions about the dataset, contact: data-support@example.com

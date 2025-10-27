@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Interactive Graph - Architectural Dataset</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .graph-container {
+            width: 100%;
+            height: 400px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            cursor: grab;
+        }
+        .graph-container:active {
+            cursor: grabbing;
+        }
+        .graph-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease;
+            position: relative;
+        }
+        .sample-chart {
+            width: 300px;
+            height: 200px;
+            background: linear-gradient(45deg, #007bff, #28a745);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+        .controls {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .controls button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .controls button:hover {
+            background-color: #0056b3;
+        }
+        .instructions {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e7f3ff;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="graph-container" id="graphContainer">
+        <div class="graph-content" id="graphContent">
+            <div class="sample-chart" id="sampleChart">
+                Sample 3D Building Model
+            </div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button onclick="resetView()">Reset View</button>
+        <button onclick="rotateLeft()">Rotate Left</button>
+        <button onclick="rotateRight()">Rotate Right</button>
+        <button onclick="zoomIn()">Zoom In</button>
+        <button onclick="zoomOut()">Zoom Out</button>
+    </div>
+    
+    <div class="instructions">
+        <strong>Instructions:</strong>
+        • Click and drag to pan the view
+        • Use mouse wheel to zoom in/out
+        • Right-click and drag to rotate
+        • Use buttons above for precise control
+    </div>
+
+    <script>
+        let isDragging = false;
+        let isRightDragging = false;
+        let lastX = 0;
+        let lastY = 0;
+        let translateX = 0;
+        let translateY = 0;
+        let scale = 1;
+        let rotation = 0;
+
+        const container = document.getElementById('graphContainer');
+        const content = document.getElementById('graphContent');
+        const chart = document.getElementById('sampleChart');
+
+        // Mouse events for panning
+        container.addEventListener('mousedown', function(e) {
+            if (e.button === 0) { // Left click
+                isDragging = true;
+                lastX = e.clientX;
+                lastY = e.clientY;
+                e.preventDefault();
+            } else if (e.button === 2) { // Right click
+                isRightDragging = true;
+                lastX = e.clientX;
+                lastY = e.clientY;
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                const deltaX = e.clientX - lastX;
+                const deltaY = e.clientY - lastY;
+                translateX += deltaX;
+                translateY += deltaY;
+                updateTransform();
+                lastX = e.clientX;
+                lastY = e.clientY;
+            } else if (isRightDragging) {
+                const deltaX = e.clientX - lastX;
+                rotation += deltaX * 0.5;
+                updateTransform();
+                lastX = e.clientX;
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+            isRightDragging = false;
+        });
+
+        // Prevent context menu on right click
+        container.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Mouse wheel for zooming
+        container.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            scale *= delta;
+            scale = Math.max(0.5, Math.min(3, scale)); // Limit zoom range
+            updateTransform();
+        });
+
+        // Touch events for mobile
+        let touches = [];
+        let lastDistance = 0;
+
+        container.addEventListener('touchstart', function(e) {
+            touches = Array.from(e.touches);
+            if (touches.length === 1) {
+                lastX = touches[0].clientX;
+                lastY = touches[0].clientY;
+            } else if (touches.length === 2) {
+                lastDistance = getDistance(touches[0], touches[1]);
+            }
+            e.preventDefault();
+        });
+
+        container.addEventListener('touchmove', function(e) {
+            touches = Array.from(e.touches);
+            
+            if (touches.length === 1) {
+                // Pan
+                const deltaX = touches[0].clientX - lastX;
+                const deltaY = touches[0].clientY - lastY;
+                translateX += deltaX;
+                translateY += deltaY;
+                updateTransform();
+                lastX = touches[0].clientX;
+                lastY = touches[0].clientY;
+            } else if (touches.length === 2) {
+                // Zoom
+                const distance = getDistance(touches[0], touches[1]);
+                const delta = distance / lastDistance;
+                scale *= delta;
+                scale = Math.max(0.5, Math.min(3, scale));
+                updateTransform();
+                lastDistance = distance;
+            }
+            e.preventDefault();
+        });
+
+        function getDistance(touch1, touch2) {
+            const dx = touch1.clientX - touch2.clientX;
+            const dy = touch1.clientY - touch2.clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        function updateTransform() {
+            content.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+            chart.style.transform = `rotateY(${rotation}deg)`;
+        }
+
+        // Control functions
+        function resetView() {
+            translateX = 0;
+            translateY = 0;
+            scale = 1;
+            rotation = 0;
+            updateTransform();
+        }
+
+        function rotateLeft() {
+            rotation -= 15;
+            updateTransform();
+        }
+
+        function rotateRight() {
+            rotation += 15;
+            updateTransform();
+        }
+
+        function zoomIn() {
+            scale = Math.min(3, scale * 1.2);
+            updateTransform();
+        }
+
+        function zoomOut() {
+            scale = Math.max(0.5, scale * 0.8);
+            updateTransform();
+        }
+
+        // Message to parent window when loaded
+        if (window.parent !== window) {
+            window.parent.postMessage({ action: 'graphLoaded' }, '*');
+        }
+
+        // Listen for reset messages from parent
+        window.addEventListener('message', function(e) {
+            if (e.data && e.data.action === 'reset') {
+                resetView();
+            }
+        });
+    </script>
+</body>
+</html>

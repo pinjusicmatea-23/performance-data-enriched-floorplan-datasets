@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architectural Dataset</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/graph-viewer.css">
+    <link rel="stylesheet" href="css/ifc-viewer.css">
+    <!-- Three.js CDN for 3D rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r157/three.min.js"></script>
+</head>
+<body>
+    <!-- Header with hamburger menu -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>Architectural Dataset</h1>
+            </div>
+            <nav class="nav" id="nav">
+                <ul class="nav-list">
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="pages/blog.html" class="nav-link">Blog</a></li>
+                    <li><a href="pages/sources.html" class="nav-link">Sources</a></li>
+                    <li><a href="pages/data-usage.html" class="nav-link">Data Usage</a></li>
+                    <li><a href="#graphs" class="nav-link">Visualizations</a></li>
+                    <li><a href="#ifc-models" class="nav-link">IFC Models</a></li>
+                    <li><a href="#download" class="nav-link">Download Dataset</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main>
+        <!-- Hero section -->
+        <section id="home" class="hero">
+            <div class="container">
+                <h2>Explore Architectural Data</h2>
+                <p>Discover and analyze comprehensive architectural datasets with interactive visualizations and downloadable resources.</p>
+                <div class="hero-buttons">
+                    <a href="#graphs" class="btn btn-primary">View Visualizations</a>
+                    <a href="#ifc-models" class="btn btn-primary">Explore 3D Models</a>
+                    <a href="#download" class="btn btn-secondary">Download Dataset</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Graphs Section -->
+        <section id="graphs" class="graphs-section">
+            <div class="container">
+                <h2>Interactive Visualizations</h2>
+                <p>Explore architectural adjacency graphs showing spatial relationships within buildings. Pan, zoom, and interact with 37+ graph visualizations.</p>
+                <div class="graph-container">
+                    <div class="graph-viewer" id="graph-viewer">
+                        <div class="graph-placeholder">
+                            <p><strong>Adjacency Graph Viewer</strong></p>
+                            <p>37+ architectural adjacency graphs available</p>
+                            <p>Use the controls below to browse and load graphs</p>
+                            <p>Supported features:</p>
+                            <ul style="text-align: left; margin-top: 1rem;">
+                                <li>Pan and zoom with mouse/touch</li>
+                                <li>Search graphs by building number</li>
+                                <li>Filter by graph type</li>
+                                <li>Random graph exploration</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="graph-controls">
+                        <button class="btn" onclick="loadGraph('1006_adjacency.html')">Load Building 1006</button>
+                        <button class="btn" onclick="loadRandomGraph()">Random Graph</button>
+                        <button class="btn secondary" onclick="resetView()">Reset View</button>
+                        <button class="btn secondary" onclick="graphManager.showGraphList()">Browse All</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IFC Models Section -->
+        <section id="ifc-models" class="ifc-section">
+            <div class="container">
+                <h2>3D IFC Models</h2>
+                <p>Explore architectural models in full 3D with pan, rotate, and zoom capabilities.</p>
+                
+                <!-- IFC Upload Area -->
+                <div class="ifc-upload" id="ifc-upload">
+                    <input type="file" id="ifc-file-input" accept=".ifc" multiple>
+                    <label for="ifc-file-input" class="ifc-upload-label">Choose IFC Files</label>
+                    <div class="ifc-upload-text">
+                        <p>Drag and drop IFC files here or click to select</p>
+                        <p>Supported formats: .ifc, .ifcxml</p>
+                    </div>
+                </div>
+
+                <!-- IFC Viewer Container -->
+                <div class="ifc-viewer-container">
+                    <iframe 
+                        id="ifc-viewer-frame" 
+                        class="ifc-viewer-frame" 
+                        src="graphs/basic-3d-viewer.html"
+                        title="Basic 3D Building Viewer - IAAC Performance Dataset">
+                    </iframe>
+                </div>
+
+                <!-- IFC Controls -->
+                <div class="ifc-controls">
+                    <button class="btn" onclick="sendIFCCommand('loadModel', 'sample-building.ifc')">🏗️ Sample Building</button>
+                    <button class="btn" onclick="sendIFCCommand('loadModel', '1501.ifc')">Model 1501</button>
+                    <button class="btn" onclick="sendIFCCommand('loadModel', '2103.ifc')">Model 2103</button>
+                    <button class="btn secondary" onclick="sendIFCCommand('resetCamera')">Reset View</button>
+                    <button class="btn secondary" onclick="sendIFCCommand('fitToView')">Fit to View</button>
+                    <button class="btn success" onclick="sendIFCCommand('createDemoBuilding')">Demo Building</button>
+                    <button class="btn secondary" onclick="sendIFCCommand('loadRandomModel')">🎲 Random Model</button>
+                </div>
+
+                <!-- Model Information -->
+                <div class="model-info">
+                    <h3>Enhanced IFC Viewer Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Model Type</div>
+                            <div class="info-value">Performance-Enriched IFC</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Integration</div>
+                            <div class="info-value">🔷 Speckle Platform</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Dataset Source</div>
+                            <div class="info-value">Swiss Dwellings Enhanced</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Performance Data</div>
+                            <div class="info-value">Energy + Daylight Analysis</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Research Project</div>
+                            <div class="info-value">IAAC Thesis 2024-2025</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Climate Zones</div>
+                            <div class="info-value">10 Global Climates</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Features</div>
+                            <div class="info-value">Element Selection, Wireframe Mode</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IFC Model Gallery -->
+                <div class="ifc-gallery">
+                    <!-- Models will be automatically populated by ifc-model-manager.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section id="download" class="download-section">
+            <div class="container">
+                <h2>Download Dataset</h2>
+                <p>Access our comprehensive architectural dataset for research and analysis.</p>
+                <div class="download-grid">
+                    <div class="download-item">
+                        <h3>Full Dataset</h3>
+                        <p>Complete architectural dataset with all measurements and metadata.</p>
+                        <a href="datasets/full-dataset.zip" class="btn btn-download" download>Download ZIP</a>
+                    </div>
+                    <div class="download-item">
+                        <h3>Sample Data</h3>
+                        <p>Sample subset for testing and evaluation purposes.</p>
+                        <a href="datasets/sample-data.csv" class="btn btn-download" download>Download CSV</a>
+                    </div>
+                    <div class="download-item">
+                        <h3>Documentation</h3>
+                        <p>Data dictionary and usage guidelines.</p>
+                        <a href="datasets/documentation.pdf" class="btn btn-download" download>Download PDF</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Links Section -->
+        <section class="quick-links">
+            <div class="container">
+                <h2>Quick Links</h2>
+                <div class="links-grid">
+                    <div class="link-card">
+                        <h3>Blog</h3>
+                        <p>Latest updates and insights about our architectural dataset.</p>
+                        <a href="pages/blog.html" class="btn">Read Blog</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Sources</h3>
+                        <p>References and external resources used in our dataset.</p>
+                        <a href="pages/sources.html" class="btn">View Sources</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Visualizations</h3>
+                        <p>Interactive adjacency graphs showing spatial relationships in buildings.</p>
+                        <a href="#graphs" class="btn">View Graphs</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>IFC Models</h3>
+                        <p>Interactive 3D building models with full navigation controls.</p>
+                        <a href="#ifc-models" class="btn">Explore Models</a>
+                    </div>
+                    <div class="link-card">
+                        <h3>Data Usage</h3>
+                        <p>Learn how to properly cite and use our dataset.</p>
+                        <a href="pages/data-usage.html" class="btn">Usage Guidelines</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Architectural Dataset Project. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="pages/data-usage.html">Data Usage</a>
+                <a href="pages/sources.html">Sources</a>
+                <a href="mailto:contact@example.com">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/menu.js"></script>
+    <script src="js/performance-optimizer.js"></script>
+    <script src="js/graph-viewer.js"></script>
+    <script src="js/enhanced-graph-loader.js"></script>
+    <script src="js/ifc-viewer-controls.js"></script>
+    <script src="js/graph-manager.js"></script>
+    <script src="js/ifc-viewer.js"></script>
+    <script src="js/ifc-model-manager.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

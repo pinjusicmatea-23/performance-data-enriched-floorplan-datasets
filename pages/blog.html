@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Architectural Dataset</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/menu.css">
+</head>
+<body>
+    <!-- Header with hamburger menu -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1><a href="../index.html" style="text-decoration: none; color: inherit;">Architectural Dataset</a></h1>
+            </div>
+            <nav class="nav" id="nav">
+                <ul class="nav-list">
+                    <li><a href="../index.html" class="nav-link">Home</a></li>
+                    <li><a href="blog.html" class="nav-link active">Blog</a></li>
+                    <li><a href="sources.html" class="nav-link">Sources</a></li>
+                    <li><a href="data-usage.html" class="nav-link">Data Usage</a></li>
+                    <li><a href="../index.html#graphs" class="nav-link">Visualizations</a></li>
+                    <li><a href="../index.html#download" class="nav-link">Download Dataset</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Blog</h1>
+                <p>Latest updates, insights, and developments about our architectural dataset.</p>
+            </div>
+
+            <!-- Blog posts -->
+            <div class="blog-container">
+                <article class="blog-post featured">
+                    <div class="post-header">
+                        <h2>Performance-data Enriched Floorplan Datasets</h2>
+                        <div class="post-meta">
+                            <span class="post-date">September 24, 2025</span>
+                            <span class="post-author">By Marco Durand, Matea Pinjusic, and Joaquin Broquedis</span>
+                            <span class="post-institution">IAAC - Institute for Advanced Architecture of Catalonia</span>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <h3>Abstract</h3>
+                        <p>The integration of generative AI into architecture is transforming early-stage design processes, particularly by enabling rapid and automated floorplan generation. These tools increase efficiency by exploring large design spaces and producing multiple layout options in a short time. However, current workflows struggle to integrate critical performative analyses such as daylight availability, thermal comfort, and energy demand into the earliest phases of design.</p>
+                        
+                        <p>This project develops a real-world architectural dataset enriched with geospatial information (GeoJSON), environmental data, and energy simulation outputs. The dataset provides a foundation for advancing performance-informed generative design, enabling machine learning models and design tools to account for climatic and geographic conditions alongside spatial and geometric qualities of buildings.</p>
+
+                        <div class="research-highlights">
+                            <h4>Key Research Questions</h4>
+                            <blockquote>
+                                "How can we create a workflow to enrich existing floorplan databases with performative data?"
+                            </blockquote>
+                            
+                            <h4>Methodology Highlights</h4>
+                            <ul>
+                                <li><strong>Swiss Dwellings Dataset:</strong> Real Swiss residential buildings with normalized CSV tables and WKT geometry</li>
+                                <li><strong>Context Integration:</strong> Urban meshes via Cityweft API with climate-specific EPW files</li>
+                                <li><strong>Performance Analysis:</strong> Ladybug Tools for daylight and solar analyses in Grasshopper</li>
+                                <li><strong>Multi-format Export:</strong> CSV, XLSX, IFC2x3, and GraphML outputs with stable IDs</li>
+                                <li><strong>Graph Networks:</strong> Space-adjacency and circulation graphs for ML applications</li>
+                            </ul>
+                        </div>
+
+                        <div class="dataset-stats">
+                            <h4>Dataset Statistics</h4>
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <span class="stat-number">1,171</span>
+                                    <span class="stat-label">Buildings Processed</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">4,994</span>
+                                    <span class="stat-label">Room-level Simulations</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">10</span>
+                                    <span class="stat-label">Climate Zones</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">782</span>
+                                    <span class="stat-label">Building Graphs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="technical-pipeline">
+                            <h4>Technical Pipeline</h4>
+                            <ol>
+                                <li><strong>CSV Extraction:</strong> Parse Swiss Dwellings relational tables into Grasshopper DataTrees</li>
+                                <li><strong>3D Reconstruction:</strong> Convert WKT geometry to parametric 3D models</li>
+                                <li><strong>Context Integration:</strong> Match buildings to cities and import urban context via Cityweft</li>
+                                <li><strong>Performance Analysis:</strong> Run daylight and solar simulations with consistent grids</li>
+                                <li><strong>IFC Authoring:</strong> Create IFC2x3 files with embedded performance data as custom properties</li>
+                                <li><strong>Graph Generation:</strong> Extract space-adjacency and circulation networks</li>
+                                <li><strong>Multi-format Export:</strong> Synchronized outputs across CSV, XLSX, IFC, and GraphML</li>
+                            </ol>
+                        </div>
+
+                        <a href="https://blog.iaac.net/performance-data-enriched-floorplan-datasets/" class="read-more" target="_blank">Read Full Research Paper →</a>
+                    </div>
+                </article>
+
+                <article class="blog-post">
+                    <div class="post-header">
+                        <h2>Enhanced IFC Viewer with Speckle Integration</h2>
+                        <div class="post-meta">
+                            <span class="post-date">October 27, 2025</span>
+                            <span class="post-author">By Development Team</span>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>We've upgraded our IFC viewer to integrate with Speckle for better performance data visualization and interoperability. The new viewer supports the enhanced dataset format with embedded performance metrics.</p>
+                        
+                        <h4>New Features:</h4>
+                        <ul>
+                            <li>Real-time performance data overlay on 3D models</li>
+                            <li>Interactive daylight analysis grid visualization</li>
+                            <li>Energy flow visualization for thermal performance</li>
+                            <li>Speckle stream integration for collaborative workflows</li>
+                            <li>Enhanced metadata display with climate and context data</li>
+                        </ul>
+                        
+                        <p>The viewer now displays color-coded performance zones, window orientation data, and space-level energy metrics directly on the 3D model, making it easier to understand the relationship between design and performance.</p>
+                        <a href="../index.html#ifc" class="read-more">Try the Enhanced Viewer →</a>
+                    </div>
+                </article>
+
+                <article class="blog-post">
+                    <div class="post-header">
+                        <h2>Interactive Graph Visualizations: 37+ Adjacency Networks</h2>
+                        <div class="post-meta">
+                            <span class="post-date">October 25, 2025</span>
+                            <span class="post-author">By Research Team</span>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>Our comprehensive collection of interactive adjacency graphs provides insights into spatial relationships within buildings. Each graph represents the connectivity and circulation patterns of architectural spaces.</p>
+                        
+                        <h4>Graph Types Available:</h4>
+                        <ul>
+                            <li><strong>Space-Adjacency Graphs:</strong> Physical connections between rooms and spaces</li>
+                            <li><strong>Circulation Networks:</strong> Walkable paths and movement flows</li>
+                            <li><strong>Performance-Enhanced Networks:</strong> Nodes enriched with daylight and energy data</li>
+                        </ul>
+                        
+                        <p>These visualizations support research in wayfinding, egress analysis, program clustering, and machine learning feature extraction for building topology understanding.</p>
+                        <a href="../index.html#graphs" class="read-more">Explore Graph Collection →</a>
+                    </div>
+                </article>
+
+                <article class="blog-post">
+                    <div class="post-header">
+                        <h2>Open Dataset for Performance-Informed Design</h2>
+                        <div class="post-meta">
+                            <span class="post-date">October 20, 2025</span>
+                            <span class="post-author">By Research Team</span>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <p>Our enhanced dataset addresses the gap between architectural layouts and environmental performance data. Unlike existing synthetic datasets, our corpus is built from real Swiss residential buildings with comprehensive performance analysis.</p>
+                        
+                        <h4>Dataset Features:</h4>
+                        <ul>
+                            <li>Real-world building geometries from Swiss Dwellings database</li>
+                            <li>Performance simulations across 10 climate zones</li>
+                            <li>Daylight factor analysis with 1-meter sensor grids</li>
+                            <li>Solar radiation and sun hour calculations</li>
+                            <li>Energy demand modeling with context-specific parameters</li>
+                            <li>Graph network representations for ML applications</li>
+                        </ul>
+                        
+                        <p>This dataset enables researchers to train ML models that consider both spatial configuration and environmental performance, advancing the field of performance-informed generative design.</p>
+                        <a href="../index.html#download" class="read-more">Download Dataset →</a>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <a href="#" class="pagination-link pagination-prev disabled">← Previous</a>
+                <a href="#" class="pagination-link active">1</a>
+                <a href="#" class="pagination-link">2</a>
+                <a href="#" class="pagination-link">3</a>
+                <a href="#" class="pagination-link pagination-next">Next →</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Architectural Dataset Project. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="data-usage.html">Data Usage</a>
+                <a href="sources.html">Sources</a>
+                <a href="mailto:contact@example.com">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/menu.js"></script>
+</body>
+</html>

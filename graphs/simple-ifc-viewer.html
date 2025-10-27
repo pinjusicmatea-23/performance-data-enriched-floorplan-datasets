@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Web-IFC Viewer - IAAC Dataset</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+        
+        #viewer-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: #f5f5f5;
+        }
+        
+        #three-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 249, 250, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+        
+        .loading-content {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e9ecef;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .controls-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            min-width: 250px;
+            z-index: 100;
+        }
+        
+        .controls-panel h3 {
+            margin-bottom: 1rem;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 70px;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+        
+        .btn.secondary {
+            background: #6c757d;
+        }
+        
+        .btn.secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn.success {
+            background: #28a745;
+        }
+        
+        .btn.success:hover {
+            background: #218838;
+        }
+        
+        .status-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #666;
+            max-width: 280px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        
+        .status-panel strong {
+            color: #333;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-size: 0.8rem;
+        }
+        
+        .success-message {
+            color: #155724;
+            background: #d4edda;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-size: 0.8rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="viewer-container">
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <h3>Simple IFC Viewer</h3>
+                <p>Loading Web-IFC for IAAC dataset...</p>
+                <div id="status-text">Initializing...</div>
+            </div>
+        </div>
+        
+        <div id="controls-panel" class="controls-panel" style="display: none;">
+            <h3>🏗️ IFC Model Viewer</h3>
+            
+            <div class="control-group">
+                <label>Load IFC Models</label>
+                <div class="control-buttons">
+                    <button class="btn" onclick="loadModel('sample-building.ifc')">Sample</button>
+                    <button class="btn" onclick="loadModel('1501.ifc')">1501</button>
+                    <button class="btn" onclick="loadModel('2103.ifc')">2103</button>
+                </div>
+                <div class="control-buttons" style="margin-top: 0.5rem;">
+                    <button class="btn" onclick="loadModel('2131.ifc')">2131</button>
+                    <button class="btn" onclick="loadModel('668.ifc')">668</button>
+                    <button class="btn success" onclick="loadRandomModel()">🎲 Random</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>View Controls</label>
+                <div class="control-buttons">
+                    <button class="btn secondary" onclick="resetCamera()">Reset</button>
+                    <button class="btn secondary" onclick="fitToView()">Fit All</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>Demo Building</label>
+                <div class="control-buttons">
+                    <button class="btn success" onclick="createDemoBuilding()">Create Demo</button>
+                </div>
+                <div id="demo-info" class="success-message" style="display: none;">
+                    Demo building created! This shows a sample building while IFC files load.
+                </div>
+            </div>
+        </div>
+        
+        <div id="status-panel" class="status-panel">
+            <strong>IAAC Performance Dataset</strong><br>
+            Simple IFC viewer with Web-IFC<br>
+            <div id="current-model">No model loaded</div>
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- Web-IFC -->
+    <script src="https://unpkg.com/web-ifc@0.0.44/web-ifc-api.js"></script>
+    <script src="https://unpkg.com/web-ifc-three@0.0.125/IFCLoader.js"></script>
+
+    <script>
+        class SimpleIFCViewer {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.controls = null;
+                this.ifcLoader = null;
+                this.currentModel = null;
+                this.init();
+            }
+            
+            init() {
+                this.updateStatus('Setting up 3D scene...');
+                this.setupScene();
+                this.setupCamera();
+                this.setupRenderer();
+                this.setupControls();
+                this.setupLighting();
+                this.setupIFCLoader();
+                this.animate();
+                this.hideLoading();
+                this.showControls();
+                this.updateStatus('Ready! Demo building loading...');
+                
+                // Immediately create demo building
+                this.createDemoBuilding();
+            }
+            
+            setupScene() {
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0xf0f0f0);
+                
+                // Add a grid for reference
+                const gridHelper = new THREE.GridHelper(50, 50, 0x888888, 0xcccccc);
+                this.scene.add(gridHelper);
+            }
+            
+            setupCamera() {
+                const container = document.getElementById('viewer-container');
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    container.clientWidth / container.clientHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.set(20, 20, 20);
+            }
+            
+            setupRenderer() {
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+                
+                const container = document.getElementById('viewer-container');
+                container.appendChild(this.renderer.domElement);
+                container.removeChild(document.getElementById('loading-overlay'));
+            }
+            
+            setupControls() {
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+                this.controls.enableDamping = true;
+                this.controls.dampingFactor = 0.05;
+                this.controls.target.set(0, 0, 0);
+            }
+            
+            setupLighting() {
+                // Ambient light
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+                this.scene.add(ambientLight);
+                
+                // Directional light
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(50, 50, 50);
+                directionalLight.castShadow = true;
+                directionalLight.shadow.mapSize.width = 2048;
+                directionalLight.shadow.mapSize.height = 2048;
+                this.scene.add(directionalLight);
+            }
+            
+            setupIFCLoader() {
+                try {
+                    if (typeof IFCLoader !== 'undefined') {
+                        this.ifcLoader = new IFCLoader();
+                        this.ifcLoader.ifcManager.setWasmPath('https://unpkg.com/web-ifc@0.0.44/');
+                        this.updateStatus('IFC Loader ready');
+                    } else {
+                        this.updateStatus('IFC Loader not available - using demo mode');
+                    }
+                } catch (error) {
+                    console.error('IFC Loader setup failed:', error);
+                    this.updateStatus('IFC Loader failed - demo mode only');
+                }
+            }
+            
+            async loadModel(filename) {
+                this.updateStatus(`Loading ${filename}...`);
+                
+                if (!this.ifcLoader) {
+                    this.showError('IFC Loader not available. Showing demo building instead.');
+                    this.createDemoBuilding();
+                    return;
+                }
+                
+                try {
+                    // Clear existing model
+                    if (this.currentModel) {
+                        this.scene.remove(this.currentModel);
+                    }
+                    
+                    const modelPath = `../models/${filename}`;
+                    
+                    this.ifcLoader.load(
+                        modelPath,
+                        (ifcModel) => {
+                            console.log('IFC Model loaded successfully:', ifcModel);
+                            
+                            // Add to scene
+                            this.scene.add(ifcModel);
+                            this.currentModel = ifcModel;
+                            
+                            // Position model
+                            this.centerModel(ifcModel);
+                            
+                            // Update status
+                            this.updateModelInfo(filename);
+                            this.showSuccess(`Successfully loaded: ${filename}`);
+                            
+                            // Fit to view
+                            this.fitToView();
+                        },
+                        (progress) => {
+                            const percentage = (progress.loaded / progress.total) * 100;
+                            this.updateStatus(`Loading ${filename}: ${Math.round(percentage)}%`);
+                        },
+                        (error) => {
+                            console.error('IFC loading error:', error);
+                            this.showError(`Failed to load ${filename}. Showing demo building.`);
+                            this.createDemoBuilding();
+                        }
+                    );
+                    
+                } catch (error) {
+                    console.error('IFC loading exception:', error);
+                    this.showError(`Error loading ${filename}. Showing demo building.`);
+                    this.createDemoBuilding();
+                }
+            }
+            
+            createDemoBuilding() {
+                // Clear existing model
+                if (this.currentModel) {
+                    this.scene.remove(this.currentModel);
+                }
+                
+                const buildingGroup = new THREE.Group();
+                buildingGroup.name = 'Demo_Building';
+                
+                // Create a simple building structure
+                const materials = {
+                    wall: new THREE.MeshLambertMaterial({ color: 0xe0e0e0 }),
+                    roof: new THREE.MeshLambertMaterial({ color: 0x8b4513 }),
+                    window: new THREE.MeshLambertMaterial({ color: 0x87ceeb, transparent: true, opacity: 0.7 }),
+                    door: new THREE.MeshLambertMaterial({ color: 0x654321 })
+                };
+                
+                // Foundation
+                const foundation = new THREE.Mesh(
+                    new THREE.BoxGeometry(20, 1, 15),
+                    new THREE.MeshLambertMaterial({ color: 0x888888 })
+                );
+                foundation.position.set(0, -0.5, 0);
+                buildingGroup.add(foundation);
+                
+                // Walls
+                const wallHeight = 8;
+                
+                // Front wall with door
+                const frontWall = new THREE.Mesh(
+                    new THREE.BoxGeometry(20, wallHeight, 0.5),
+                    materials.wall
+                );
+                frontWall.position.set(0, wallHeight/2, 7.25);
+                buildingGroup.add(frontWall);
+                
+                // Door
+                const door = new THREE.Mesh(
+                    new THREE.BoxGeometry(2, 6, 0.6),
+                    materials.door
+                );
+                door.position.set(-5, 3, 7.25);
+                buildingGroup.add(door);
+                
+                // Back wall
+                const backWall = new THREE.Mesh(
+                    new THREE.BoxGeometry(20, wallHeight, 0.5),
+                    materials.wall
+                );
+                backWall.position.set(0, wallHeight/2, -7.25);
+                buildingGroup.add(backWall);
+                
+                // Side walls with windows
+                const leftWall = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.5, wallHeight, 15),
+                    materials.wall
+                );
+                leftWall.position.set(-9.75, wallHeight/2, 0);
+                buildingGroup.add(leftWall);
+                
+                const rightWall = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.5, wallHeight, 15),
+                    materials.wall
+                );
+                rightWall.position.set(9.75, wallHeight/2, 0);
+                buildingGroup.add(rightWall);
+                
+                // Windows
+                for (let i = 0; i < 3; i++) {
+                    const window1 = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.6, 3, 2),
+                        materials.window
+                    );
+                    window1.position.set(-9.75, 4, -4 + i * 4);
+                    buildingGroup.add(window1);
+                    
+                    const window2 = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.6, 3, 2),
+                        materials.window
+                    );
+                    window2.position.set(9.75, 4, -4 + i * 4);
+                    buildingGroup.add(window2);
+                }
+                
+                // Roof
+                const roof = new THREE.Mesh(
+                    new THREE.BoxGeometry(22, 1, 17),
+                    materials.roof
+                );
+                roof.position.set(0, wallHeight + 0.5, 0);
+                buildingGroup.add(roof);
+                
+                // Create a second building nearby
+                const building2 = buildingGroup.clone();
+                building2.position.set(30, 0, 0);
+                building2.children.forEach(child => {
+                    if (child.material) {
+                        child.material = child.material.clone();
+                        child.material.color.setHex(0xf0f0f0); // Slightly different color
+                    }
+                });
+                this.scene.add(building2);
+                
+                // Create a third smaller building
+                const building3 = buildingGroup.clone();
+                building3.position.set(-25, 0, 20);
+                building3.scale.set(0.7, 0.7, 0.7);
+                building3.children.forEach(child => {
+                    if (child.material) {
+                        child.material = child.material.clone();
+                        child.material.color.setHex(0xd0d0d0); // Different color
+                    }
+                });
+                this.scene.add(building3);
+                
+                // Add to scene
+                this.scene.add(buildingGroup);
+                this.currentModel = buildingGroup;
+                
+                // Update status
+                this.updateModelInfo('Demo Building Complex (3 Buildings)');
+                this.showSuccess('Demo buildings created! 3 buildings showing sample architecture.');
+                document.getElementById('demo-info').style.display = 'block';
+                
+                // Notify parent window
+                if (window.parent) {
+                    window.parent.postMessage({
+                        action: 'demoCreated',
+                        message: 'Demo building created successfully!',
+                        timestamp: Date.now()
+                    }, '*');
+                }
+                
+                // Fit to view
+                this.fitToView();
+            }
+            
+            centerModel(model) {
+                const box = new THREE.Box3().setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                model.position.copy(center).multiplyScalar(-1);
+            }
+            
+            loadRandomModel() {
+                const models = ['sample-building.ifc', '1501.ifc', '2103.ifc', '2131.ifc', '668.ifc'];
+                const randomModel = models[Math.floor(Math.random() * models.length)];
+                this.loadModel(randomModel);
+            }
+            
+            resetCamera() {
+                this.camera.position.set(20, 20, 20);
+                this.controls.target.set(0, 0, 0);
+                this.controls.update();
+            }
+            
+            fitToView() {
+                if (this.currentModel) {
+                    const box = new THREE.Box3().setFromObject(this.currentModel);
+                    const size = box.getSize(new THREE.Vector3());
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const distance = maxDim * 1.5;
+                    
+                    this.camera.position.set(distance, distance, distance);
+                    this.controls.target.copy(box.getCenter(new THREE.Vector3()));
+                    this.controls.update();
+                }
+            }
+            
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                this.controls.update();
+                this.renderer.render(this.scene, this.camera);
+            }
+            
+            updateStatus(message) {
+                const statusText = document.getElementById('status-text');
+                if (statusText) statusText.textContent = message;
+                
+                // Also update the bottom status panel
+                const statusPanel = document.getElementById('current-model');
+                if (statusPanel && message.includes('Ready')) {
+                    statusPanel.innerHTML = `<strong>Status:</strong> ${message}`;
+                }
+                
+                console.log('Status:', message);
+            }
+            
+            updateModelInfo(filename) {
+                const modelInfo = document.getElementById('current-model');
+                if (modelInfo) {
+                    modelInfo.innerHTML = `<strong>Current:</strong> ${filename}`;
+                }
+                
+                // Notify parent window
+                if (window.parent) {
+                    window.parent.postMessage({
+                        action: 'modelLoaded',
+                        filename: filename,
+                        timestamp: Date.now()
+                    }, '*');
+                }
+            }
+            
+            showError(message) {
+                this.showNotification(message, 'error');
+            }
+            
+            showSuccess(message) {
+                this.showNotification(message, 'success');
+            }
+            
+            showNotification(message, type = 'info') {
+                const existing = document.querySelectorAll('.notification');
+                existing.forEach(n => n.remove());
+                
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}-message`;
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 1rem;
+                    border-radius: 6px;
+                    z-index: 10000;
+                    max-width: 300px;
+                    animation: slideIn 0.3s ease;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 4000);
+            }
+            
+            hideLoading() {
+                const loading = document.getElementById('loading-overlay');
+                if (loading) loading.style.display = 'none';
+            }
+            
+            showControls() {
+                const controls = document.getElementById('controls-panel');
+                if (controls) controls.style.display = 'block';
+            }
+        }
+        
+        // Initialize viewer
+        let viewer;
+        
+        // Global functions for buttons
+        window.loadModel = (filename) => viewer.loadModel(filename);
+        window.loadRandomModel = () => viewer.loadRandomModel();
+        window.resetCamera = () => viewer.resetCamera();
+        window.fitToView = () => viewer.fitToView();
+        window.createDemoBuilding = () => viewer.createDemoBuilding();
+        
+        // Start the viewer
+        window.addEventListener('DOMContentLoaded', () => {
+            viewer = new SimpleIFCViewer();
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (viewer && viewer.camera && viewer.renderer) {
+                viewer.camera.aspect = window.innerWidth / window.innerHeight;
+                viewer.camera.updateProjectionMatrix();
+                viewer.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+        
+        // Listen for messages from parent window
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.action && viewer) {
+                console.log('Received command from parent:', event.data);
+                
+                switch (event.data.action) {
+                    case 'loadModel':
+                        if (event.data.parameter) {
+                            viewer.loadModel(event.data.parameter);
+                        }
+                        break;
+                    case 'resetCamera':
+                        viewer.resetCamera();
+                        break;
+                    case 'fitToView':
+                        viewer.fitToView();
+                        break;
+                    case 'createDemoBuilding':
+                        viewer.createDemoBuilding();
+                        break;
+                    case 'loadRandomModel':
+                        viewer.loadRandomModel();
+                        break;
+                    default:
+                        console.log('Unknown command:', event.data.action);
+                }
+            }
+        });
+        
+        // Notify parent window
+        window.addEventListener('load', () => {
+            if (window.parent) {
+                window.parent.postMessage({
+                    action: 'ifcViewerReady',
+                    metadata: {
+                        viewer: 'Simple Web-IFC Viewer',
+                        dataset: 'IAAC Performance Dataset',
+                        features: ['IFC Loading', 'Demo Building', 'Interactive Controls']
+                    }
+                }, '*');
+            }
+        });
+    </script>
+</body>
+</html>

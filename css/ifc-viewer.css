@@ -1,0 +1,441 @@
+/* IFC Viewer specific styles */
+.ifc-section {
+    padding: 4rem 0;
+    background-color: #f8f9fa;
+}
+
+.ifc-viewer-container {
+    background-color: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.ifc-viewer-frame {
+    width: 100%;
+    height: 600px;
+    border: none;
+    display: block;
+}
+
+.ifc-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.ifc-controls .btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.ifc-controls .btn:hover {
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+
+.ifc-controls .btn:active {
+    transform: translateY(0);
+}
+
+.ifc-controls .btn.secondary {
+    background-color: #6c757d;
+}
+
+.ifc-controls .btn.secondary:hover {
+    background-color: #545b62;
+}
+
+/* Model info panel */
+.model-info {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+}
+
+.model-info h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.model-info .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.model-info .info-item {
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #28a745;
+}
+
+.model-info .info-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.model-info .info-value {
+    color: #212529;
+    font-size: 1rem;
+}
+
+/* File upload area */
+.ifc-upload {
+    background-color: #fff;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    transition: border-color 0.3s ease;
+}
+
+.ifc-upload:hover {
+    border-color: #28a745;
+}
+
+.ifc-upload.dragover {
+    border-color: #28a745;
+    background-color: #f8fff9;
+}
+
+.ifc-upload input[type="file"] {
+    display: none;
+}
+
+.ifc-upload-label {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.ifc-upload-label:hover {
+    background-color: #0056b3;
+}
+
+.ifc-upload-text {
+    margin-top: 1rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* IFC model gallery */
+.ifc-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.ifc-gallery-item {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ifc-gallery-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ifc-gallery-thumb {
+    width: 100%;
+    height: 150px;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 3rem;
+    cursor: pointer;
+}
+
+.ifc-gallery-info {
+    padding: 1rem;
+}
+
+.ifc-gallery-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.ifc-gallery-description {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.ifc-gallery-meta {
+    font-size: 0.8rem;
+    color: #999;
+    margin-bottom: 1rem;
+    font-family: 'Courier New', monospace;
+}
+
+.ifc-gallery-meta small {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    border: 1px solid #e9ecef;
+}
+
+.ifc-gallery-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ifc-gallery-actions .btn {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* Upload prompt styling */
+.ifc-gallery-item.upload-prompt {
+    border: 2px dashed #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.ifc-gallery-item.upload-prompt:hover {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+}
+
+.ifc-gallery-item.upload-prompt .ifc-gallery-thumb {
+    color: #007bff;
+    font-size: 2rem;
+}
+
+/* Model count indicator */
+.ifc-gallery::before {
+    content: "Available Models (" attr(data-count) ")";
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Loading states */
+.ifc-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(248, 249, 250, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    backdrop-filter: blur(2px);
+}
+
+.loading-content {
+    text-align: center;
+    max-width: 500px;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.loading-spinner-ifc {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #e9ecef;
+    border-top: 5px solid #28a745;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1.5rem;
+}
+
+.loading-message {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.loading-progress-container {
+    margin: 1.5rem 0;
+}
+
+.loading-progress-bar {
+    width: 100%;
+    height: 12px;
+    background-color: #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.loading-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #28a745, #20c997);
+    width: 0%;
+    transition: width 0.5s ease;
+    border-radius: 6px;
+}
+
+.loading-percentage {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #28a745;
+}
+
+.loading-tips {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    text-align: left;
+}
+
+.loading-tips p {
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+    color: #495057;
+}
+
+.loading-tips ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.loading-tips li {
+    margin-bottom: 0.25rem;
+}
+
+.ifc-loading::before {
+    display: none;
+}
+
+/* Error states */
+.ifc-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 600px;
+    background-color: #fff5f5;
+    color: #dc3545;
+    text-align: center;
+    padding: 2rem;
+}
+
+.ifc-error h3 {
+    margin: 0 0 1rem 0;
+    color: #dc3545;
+}
+
+.ifc-error p {
+    margin: 0 0 1rem 0;
+    color: #6c757d;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .ifc-viewer-frame {
+        height: 400px;
+    }
+    
+    .ifc-controls {
+        gap: 0.5rem;
+    }
+    
+    .ifc-controls .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .model-info .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ifc-gallery {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .ifc-section {
+        padding: 2rem 0;
+    }
+    
+    .ifc-viewer-frame {
+        height: 300px;
+    }
+    
+    .ifc-controls {
+        flex-direction: column;
+    }
+    
+    .ifc-controls .btn {
+        width: 100%;
+    }
+    
+    .ifc-upload {
+        padding: 1rem;
+    }
+}
+
+/* Animation keyframes */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Accessibility improvements */
+.ifc-controls .btn:focus,
+.ifc-upload-label:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .ifc-controls,
+    .ifc-upload {
+        display: none;
+    }
+    
+    .ifc-viewer-frame {
+        height: 400px;
+        border: 1px solid #000;
+    }
+}

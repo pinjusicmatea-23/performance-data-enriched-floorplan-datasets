@@ -1,0 +1,27 @@
+# Full Architectural Dataset
+
+This archive contains the complete architectural dataset.
+
+## Contents (when replaced with actual data):
+- architectural_data.csv - Main dataset with all measurements
+- metadata.json - Detailed field descriptions and data dictionary
+- images/ - Folder with architectural photographs
+- 3d_models/ - Folder with 3D model files
+- documentation.pdf - Complete data documentation
+
+## File Size
+The actual dataset archive would be several GB in size.
+
+## Download Instructions
+1. Click the download button on the website
+2. Save the ZIP file to your local machine
+3. Extract the contents to access individual files
+4. Read the documentation.pdf for detailed usage instructions
+
+## System Requirements
+- Minimum 10GB free disk space
+- Modern browser for viewing interactive content
+- PDF reader for documentation
+- CSV/JSON compatible software for data analysis
+
+Replace this placeholder with your actual dataset ZIP file.

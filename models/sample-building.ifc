@@ -1,0 +1,50 @@
+# IFC Model Placeholder
+
+This file represents where you would place your actual IFC (Industry Foundation Classes) model.
+
+## About IFC Files
+
+IFC files contain 3D building information including:
+- **Geometry**: 3D shapes and dimensions
+- **Materials**: Building material specifications  
+- **Structure**: Walls, floors, roofs, windows, doors
+- **Properties**: Metadata about building elements
+- **Relationships**: How elements connect and relate
+
+## Supported Formats
+
+- `.ifc` - Standard IFC format
+- `.ifcxml` - XML-based IFC format
+
+## How to Add Your IFC Model
+
+1. **Export from CAD Software**: Most architectural software (Revit, ArchiCAD, SketchUp, etc.) can export to IFC format
+2. **Place in Models Folder**: Copy your `.ifc` file to this `/models/` directory
+3. **Update the Viewer**: The website will automatically detect and allow loading of IFC files
+4. **Test the Viewer**: Use the 3D viewer to pan, rotate, and zoom through your model
+
+## Viewer Features
+
+- ✅ **Pan**: Click and drag to move around
+- ✅ **Rotate**: Right-click and drag to rotate view  
+- ✅ **Zoom**: Mouse wheel to zoom in/out
+- ✅ **Reset View**: Return to default position
+- ✅ **Wireframe Mode**: Toggle between solid and wireframe display
+- ✅ **Fullscreen**: Expand to full screen viewing
+- ✅ **Screenshots**: Capture and download images
+
+## File Size Considerations
+
+- Small models (< 10MB): Load quickly in browser
+- Medium models (10-50MB): May take a few seconds to load
+- Large models (> 50MB): Consider optimizing or splitting the model
+
+## Browser Compatibility
+
+The IFC viewer works best in:
+- Chrome 70+
+- Firefox 65+ 
+- Safari 12+
+- Edge 79+
+
+Replace this placeholder file with your actual IFC model file.
