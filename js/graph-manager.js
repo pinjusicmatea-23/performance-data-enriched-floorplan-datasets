@@ -68,6 +68,12 @@ class GraphManager {
         const graphContainer = document.querySelector('.graph-container');
         if (!graphContainer) return;
 
+        // Check if controls already exist to prevent duplicates
+        const existingControls = document.querySelector('.graph-selection-controls');
+        if (existingControls) {
+            existingControls.remove();
+        }
+
         // Add graph selection and filtering controls
         const controlsHTML = `
             <div class="graph-selection-controls">

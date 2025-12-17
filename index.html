@@ -52,6 +52,71 @@
             </div>
         </section>
 
+        <!-- Project Information Section -->
+        <section id="project-info" class="project-info-section">
+            <div class="container">
+                <h2>Project Workflow</h2>
+                <div class="workflow-content">
+                    <div class="workflow-description">
+                        <p>This research project presents a comprehensive methodology for enriching architectural datasets with performance data. Our workflow integrates IFC building models with energy and daylight analysis to create enhanced datasets for machine learning and architectural research.</p>
+                        
+                        <div class="project-highlights">
+                            <div class="highlight-item">
+                                <h3>🏗️ IFC Model Processing</h3>
+                                <p>Automated extraction and processing of building geometry from Industry Foundation Classes (IFC) files</p>
+                            </div>
+                            <div class="highlight-item">
+                                <h3>⚡ Performance Analysis</h3>
+                                <p>Energy simulation and daylight analysis integration across multiple climate zones</p>
+                            </div>
+                            <div class="highlight-item">
+                                <h3>📊 Data Enrichment</h3>
+                                <p>Systematic enhancement of architectural datasets with quantified performance metrics</p>
+                            </div>
+                            <div class="highlight-item">
+                                <h3>🔬 Research Applications</h3>
+                                <p>Machine learning ready datasets for architectural performance prediction and optimization</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-image">
+                        <img src="images/workflow.png" alt="Project Workflow Diagram" class="workflow-diagram">
+                        <p class="image-caption">Comprehensive workflow for performance data enriched floorplan datasets</p>
+                    </div>
+                </div>
+                
+                <div class="project-details">
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Research Institution</div>
+                            <div class="detail-value">Institute for Advanced Architecture of Catalonia (IAAC)</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Project Timeline</div>
+                            <div class="detail-value">2024-2025 Master's Thesis</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Dataset Size</div>
+                            <div class="detail-value">17 IFC Models + Performance Data</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Climate Zones</div>
+                            <div class="detail-value">10 Global Climate Contexts</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Analysis Types</div>
+                            <div class="detail-value">Energy + Daylight Performance</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Output Format</div>
+                            <div class="detail-value">Graph Networks + IFC Models</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Interactive Graphs Section -->
         <section id="graphs" class="graphs-section">
             <div class="container">
@@ -88,76 +153,17 @@
                 <h2>3D IFC Models</h2>
                 <p>Explore architectural models in full 3D with pan, rotate, and zoom capabilities.</p>
                 
-                <!-- IFC Upload Area -->
-                <div class="ifc-upload" id="ifc-upload">
-                    <input type="file" id="ifc-file-input" accept=".ifc" multiple>
-                    <label for="ifc-file-input" class="ifc-upload-label">Choose IFC Files</label>
-                    <div class="ifc-upload-text">
-                        <p>Drag and drop IFC files here or click to select</p>
-                        <p>Supported formats: .ifc, .ifcxml</p>
-                    </div>
-                </div>
-
                 <!-- IFC Viewer Container -->
                 <div class="ifc-viewer-container">
                     <iframe 
                         id="ifc-viewer-frame" 
                         class="ifc-viewer-frame" 
-                        src="graphs/basic-3d-viewer.html"
-                        title="Basic 3D Building Viewer - IAAC Performance Dataset">
+                        src="viewers/modern-ifc-viewer.html"
+                        title="Modern IFC Viewer - IAAC Performance Dataset">
                     </iframe>
                 </div>
 
-                <!-- IFC Controls -->
-                <div class="ifc-controls">
-                    <button class="btn" onclick="sendIFCCommand('loadModel', 'sample-building.ifc')">🏗️ Sample Building</button>
-                    <button class="btn" onclick="sendIFCCommand('loadModel', '1501.ifc')">Model 1501</button>
-                    <button class="btn" onclick="sendIFCCommand('loadModel', '2103.ifc')">Model 2103</button>
-                    <button class="btn secondary" onclick="sendIFCCommand('resetCamera')">Reset View</button>
-                    <button class="btn secondary" onclick="sendIFCCommand('fitToView')">Fit to View</button>
-                    <button class="btn success" onclick="sendIFCCommand('createDemoBuilding')">Demo Building</button>
-                    <button class="btn secondary" onclick="sendIFCCommand('loadRandomModel')">🎲 Random Model</button>
-                </div>
 
-                <!-- Model Information -->
-                <div class="model-info">
-                    <h3>Enhanced IFC Viewer Information</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-label">Model Type</div>
-                            <div class="info-value">Performance-Enriched IFC</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Integration</div>
-                            <div class="info-value">🔷 Speckle Platform</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Dataset Source</div>
-                            <div class="info-value">Swiss Dwellings Enhanced</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Performance Data</div>
-                            <div class="info-value">Energy + Daylight Analysis</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Research Project</div>
-                            <div class="info-value">IAAC Thesis 2024-2025</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Climate Zones</div>
-                            <div class="info-value">10 Global Climates</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Features</div>
-                            <div class="info-value">Element Selection, Wireframe Mode</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- IFC Model Gallery -->
-                <div class="ifc-gallery">
-                    <!-- Models will be automatically populated by ifc-model-manager.js -->
-                </div>
             </div>
         </section>
 
@@ -238,10 +244,7 @@
     <script src="js/performance-optimizer.js"></script>
     <script src="js/graph-viewer.js"></script>
     <script src="js/enhanced-graph-loader.js"></script>
-    <script src="js/ifc-viewer-controls.js"></script>
     <script src="js/graph-manager.js"></script>
-    <script src="js/ifc-viewer.js"></script>
-    <script src="js/ifc-model-manager.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

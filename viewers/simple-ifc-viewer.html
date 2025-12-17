@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple IFC Viewer</title>
+  <style>
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
+    #viewer-container { 
+      width: 100vw; 
+      height: 100vh; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .controls-panel {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      min-width: 320px;
+      pointer-events: auto;
+    }
+    
+    .controls-panel h3 {
+      margin: 0 0 1rem 0;
+      color: #1e293b;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .control-group {
+      margin-bottom: 1rem;
+    }
+    
+    .control-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #64748b;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .model-btn {
+      padding: 0.6rem;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-align: center;
+      transition: all 0.2s ease;
+      min-height: 40px;
+    }
+    
+    .model-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+    }
+    
+    .model-btn.loading {
+      background: #f59e0b;
+      cursor: wait;
+    }
+    
+    .model-btn.loaded {
+      background: #059669;
+    }
+    
+    .model-btn.error {
+      background: #dc2626;
+    }
+    
+    #file-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px dashed #cbd5e1;
+      border-radius: 6px;
+      background: #f8fafc;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    
+    #file-input:hover {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      background: #64748b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.2s ease;
+      margin: 0.25rem;
+    }
+    
+    .btn:hover {
+      background: #475569;
+      transform: translateY(-1px);
+    }
+    
+    .status {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      background: #f1f5f9;
+      color: #334155;
+    }
+    
+    .status.loading {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .status.success {
+      background: #dcfce7;
+      color: #166534;
+    }
+    
+    .status.error {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="viewer-container">
+    <div class="controls-panel">
+      <h3>IFC Model Viewer</h3>
+      
+      <div class="control-group">
+        <label>Load IFC File</label>
+        <input id="file-input" type="file" accept=".ifc" />
+      </div>
+      
+      <div class="control-group">
+        <label>Available Models</label>
+        <div class="model-grid" id="model-grid">
+          <button class="model-btn" data-model="1501.ifc">1501</button>
+          <button class="model-btn" data-model="18277.ifc">18277</button>
+          <button class="model-btn" data-model="18278.ifc">18278</button>
+          <button class="model-btn" data-model="2103.ifc">2103</button>
+          <button class="model-btn" data-model="2131.ifc">2131</button>
+          <button class="model-btn" data-model="2132.ifc">2132</button>
+          <button class="model-btn" data-model="2191.ifc">2191</button>
+          <button class="model-btn" data-model="2262.ifc">2262</button>
+          <button class="model-btn" data-model="2827.ifc">2827</button>
+          <button class="model-btn" data-model="3259.ifc">3259</button>
+          <button class="model-btn" data-model="3360.ifc">3360</button>
+          <button class="model-btn" data-model="668.ifc">668</button>
+          <button class="model-btn" data-model="822.ifc">822</button>
+          <button class="model-btn" data-model="823.ifc">823</button>
+          <button class="model-btn" data-model="824.ifc">824</button>
+          <button class="model-btn" data-model="825.ifc">825</button>
+          <button class="model-btn" data-model="sample-building.ifc">Sample</button>
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <button class="btn" onclick="fitToScene()">Fit to View</button>
+        <button class="btn" onclick="resetCamera()">Reset Camera</button>
+        <button class="btn" onclick="clearModel()">Clear Model</button>
+      </div>
+      
+      <div id="status" class="status">Ready - Select an IFC file or model</div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.152.2/examples/jsm/",
+      "web-ifc": "https://unpkg.com/web-ifc@0.0.44/web-ifc-api.js",
+      "web-ifc-viewer": "https://unpkg.com/web-ifc-viewer@1.0.156/dist/index.js"
+    }
+  }
+  </script>
+
+  <script>
+    // Define utility functions immediately so they're available when buttons are clicked
+    window.fitToScene = function() {
+      if (window.viewerInstance && window.currentModelId) {
+        window.viewerInstance.context.fitToFrame().then(() => {
+          updateStatus('Fitted to view', 'ready');
+        }).catch(() => {
+          updateStatus('Fit to view failed', 'error');
+        });
+      } else if (!window.viewerInstance) {
+        updateStatus('Viewer still loading... please wait', 'loading');
+      } else {
+        updateStatus('No model loaded', 'ready');
+      }
+    };
+    
+    window.resetCamera = function() {
+      if (window.viewerInstance) {
+        try {
+          const camera = window.viewerInstance.context.getCamera();
+          camera.position.set(50, 50, 50);
+          camera.lookAt(0, 0, 0);
+          updateStatus('Camera reset', 'ready');
+        } catch (error) {
+          updateStatus('Camera reset failed', 'error');
+        }
+      } else {
+        updateStatus('Viewer still loading... please wait', 'loading');
+      }
+    };
+    
+    window.clearModel = function() {
+      if (window.viewerInstance && window.currentModelId) {
+        try {
+          window.viewerInstance.IFC.removeFromScene(window.currentModelId);
+          window.currentModelId = null;
+          updateStatus('Model cleared', 'ready');
+          
+          const buttons = document.querySelectorAll('.model-btn');
+          buttons.forEach(btn => {
+            btn.classList.remove('loaded', 'loading', 'error');
+          });
+        } catch (error) {
+          updateStatus('Clear model failed', 'error');
+        }
+      } else if (!window.viewerInstance) {
+        updateStatus('Viewer still loading... please wait', 'loading');
+      } else {
+        updateStatus('No model to clear', 'ready');
+      }
+    };
+    
+    function updateStatus(message, type = 'ready') {
+      const statusEl = document.getElementById('status');
+      if (statusEl) {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { IfcViewerAPI } from 'web-ifc-viewer';
+    import * as THREE from 'three';
+
+    // Make THREE globally available
+    window.THREE = THREE;
+
+    let viewer;
+    let currentModelId = null;
+    
+    // Make viewer and model ID globally accessible
+    window.viewerInstance = null;
+    window.currentModelId = null;
+    
+    // Initialize the IFC viewer
+    async function initViewer() {
+      try {
+        updateStatus('Initializing IFC Viewer...', 'loading');
+        
+        const container = document.getElementById('viewer-container');
+        
+        // Remove existing canvas but preserve controls
+        const existingCanvas = container.querySelector('canvas');
+        if (existingCanvas) {
+          existingCanvas.remove();
+        }
+        
+        // Try to create viewer with timeout
+        const viewerPromise = new Promise(async (resolve, reject) => {
+          try {
+            viewer = new IfcViewerAPI({ 
+              container, 
+              backgroundColor: new THREE.Color(0xffffff) 
+            });
+
+            // Set WASM path with shorter timeout
+            await viewer.IFC.setWasmPath('https://unpkg.com/web-ifc@0.0.44/');
+            resolve(viewer);
+          } catch (error) {
+            reject(error);
+          }
+        });
+
+        // Add timeout
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Viewer initialization timeout')), 10000);
+        });
+
+        viewer = await Promise.race([viewerPromise, timeoutPromise]);
+        
+        // Make globally accessible
+        window.viewerInstance = viewer;
+        
+        updateStatus('IFC Viewer ready - Click a model to load!', 'success');
+        
+      } catch (error) {
+        console.error('Failed to initialize viewer:', error);
+        updateStatus('Viewer initialization failed - buttons will still work for file checking', 'error');
+        
+        // Set a minimal viewer object so buttons don't fail completely
+        window.viewerInstance = {
+          IFC: {
+            loadIfcUrl: async () => { throw new Error('Viewer not available'); },
+            removeFromScene: () => {},
+            setWasmPath: async () => {}
+          },
+          context: {
+            fitToFrame: async () => { updateStatus('Viewer not available', 'error'); },
+            getCamera: () => ({ position: { set: () => {} }, lookAt: () => {} })
+          }
+        };
+      }
+    }
+    
+    // Load real IFC file
+    async function loadIfcFromUrl(url, modelName) {
+      try {
+        updateStatus(`Loading real IFC: ${modelName}...`, 'loading');
+        
+        // Remove existing model
+        if (currentModelId && viewer) {
+          viewer.IFC.removeFromScene(currentModelId);
+          currentModelId = null;
+          window.currentModelId = null;
+        }
+        
+        // Load the IFC model
+        currentModelId = await viewer.IFC.loadIfcUrl(url);
+        window.currentModelId = currentModelId;
+        
+        // Fit to frame
+        await viewer.context.fitToFrame();
+        
+        updateStatus(`${modelName} loaded - REAL IFC GEOMETRY!`, 'success');
+        updateModelButtons(url);
+        
+      } catch (error) {
+        console.error('Failed to load IFC:', error);
+        updateStatus(`Failed to load ${modelName}: ${error.message}`, 'error');
+      }
+    }
+    
+    // Try multiple paths for model loading
+    async function tryLoadModel(filename) {
+      // Check if viewer is ready, if not wait a bit
+      if (!window.viewerInstance) {
+        updateStatus('Waiting for viewer to initialize...', 'loading');
+        
+        // Wait up to 15 seconds for viewer to be ready
+        for (let i = 0; i < 30; i++) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          if (window.viewerInstance) break;
+        }
+        
+        if (!window.viewerInstance) {
+          updateStatus('Viewer initialization failed - cannot load models', 'error');
+          return;
+        }
+      }
+      
+      const possiblePaths = [
+        `../models/${filename}`,
+        `/models/${filename}`,
+        `./models/${filename}`,
+        `models/${filename}`
+      ];
+      
+      for (const path of possiblePaths) {
+        try {
+          const response = await fetch(path, { method: 'HEAD' });
+          if (response.ok) {
+            await loadIfcFromUrl(path, filename.replace('.ifc', ''));
+            return;
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+      
+      updateStatus(`Could not find model: ${filename}`, 'error');
+    }
+    
+    // Update status message
+    function updateStatus(message, type = 'ready') {
+      const statusEl = document.getElementById('status');
+      if (statusEl) {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+      }
+    }
+    
+    // Update model button states
+    function updateModelButtons(loadedUrl) {
+      const buttons = document.querySelectorAll('.model-btn');
+      buttons.forEach(btn => {
+        const modelFile = btn.getAttribute('data-model');
+        if (loadedUrl.includes(modelFile)) {
+          btn.classList.add('loaded');
+          btn.classList.remove('loading', 'error');
+        } else {
+          btn.classList.remove('loaded', 'loading', 'error');
+        }
+      });
+    }
+    
+    // Handle file input
+    document.getElementById('file-input').addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const url = URL.createObjectURL(file);
+      await loadIfcFromUrl(url, file.name.replace('.ifc', ''));
+      URL.revokeObjectURL(url);
+    });
+    
+    // Handle model button clicks
+    document.getElementById('model-grid').addEventListener('click', async (event) => {
+      if (event.target.classList.contains('model-btn')) {
+        const modelFile = event.target.getAttribute('data-model');
+        const button = event.target;
+        
+        button.classList.add('loading');
+        button.classList.remove('loaded', 'error');
+        
+        await tryLoadModel(modelFile);
+      }
+    });
+    
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initViewer);
+    } else {
+      initViewer();
+    }
+    
+  </script>
+</body>
+</html>

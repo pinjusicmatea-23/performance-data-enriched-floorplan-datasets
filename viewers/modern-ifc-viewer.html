@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>IFC Viewer - Three.js IFC Loader</title>
+  <style>
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: #f5f5f5;
+    }
+    
+    #container { 
+      width: 100vw; 
+      height: 100vh; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+    }
+    
+    .controls-panel {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      min-width: 260px;
+      max-width: 280px;
+      pointer-events: auto;
+      max-height: calc(100vh - 30px);
+      overflow-y: auto;
+    }
+    
+    .controls-panel h3 {
+      margin: 0 0 0.75rem 0;
+      color: #1e293b;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    
+    .control-group {
+      margin-bottom: 0.75rem;
+    }
+    
+    .control-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #64748b;
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      margin: 0.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+      min-width: 100px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn.secondary {
+      background: linear-gradient(135deg, #6b7280, #9ca3af);
+      box-shadow: 0 2px 8px rgba(107, 114, 128, 0.2);
+    }
+    
+    .btn.secondary:hover {
+      box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+    }
+    
+    .status {
+      margin-top: 0.75rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: #f1f5f9;
+      color: #475569;
+      border-left: 3px solid #94a3b8;
+    }
+    
+    .status.loading {
+      background: #fef3c7;
+      color: #92400e;
+      border-left-color: #f59e0b;
+      animation: pulse 2s infinite;
+    }
+    
+    .status.success {
+      background: #dcfce7;
+      color: #166534;
+      border-left-color: #22c55e;
+    }
+    
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left-color: #ef4444;
+    }
+    
+    .status.ready {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left-color: #3b82f6;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .model-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.3rem;
+      margin-top: 0.3rem;
+    }
+    
+    .model-btn {
+      background: #f8fafc;
+      color: #374151;
+      border: 1px solid #e5e7eb;
+      padding: 0.4rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    
+    .model-btn:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+      color: #667eea;
+    }
+    
+    .model-btn.loaded {
+      background: #dcfce7;
+      border-color: #22c55e;
+      color: #166534;
+    }
+    
+    .model-btn.loading {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+      animation: pulse 2s infinite;
+    }
+    
+    .model-btn.error {
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #991b1b;
+    }
+    
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    
+    .file-input {
+      position: absolute;
+      left: -9999px;
+    }
+    
+    .file-input-label {
+      background: #667eea;
+      color: white;
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: block;
+      text-align: center;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .file-input-label:hover {
+      background: #5a67d8;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div class="controls-panel">
+      <h3>🏗️ IFC Viewer</h3>
+      
+      <div class="control-group">
+        <label>Load 3D Model File</label>
+        <div class="file-input-wrapper">
+          <input type="file" id="file-input" class="file-input" accept=".glb,.gltf" />
+          <label for="file-input" class="file-input-label">📁 Choose GLB/GLTF File</label>
+        </div>
+        <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">
+          Note: IFC files need to be converted to GLB/GLTF format first using tools like Blender or FreeCAD.
+        </p>
+      </div>
+      
+      <div class="control-group">
+        <label>Sample Models</label>
+        <div class="model-grid">
+          <button class="model-btn" onclick="loadSampleModel('1501.ifc')">1501</button>
+          <button class="model-btn" onclick="loadSampleModel('2103.ifc')">2103</button>
+          <button class="model-btn" onclick="loadSampleModel('2131.ifc')">2131</button>
+          <button class="model-btn" onclick="loadSampleModel('2132.ifc')">2132</button>
+          <button class="model-btn" onclick="loadSampleModel('18277.ifc')">18277</button>
+          <button class="model-btn" onclick="loadSampleModel('18278.ifc')">18278</button>
+        </div>
+      </div>
+      
+      <div class="control-group">
+        <label>Viewer Controls</label>
+        <button class="btn" onclick="fitToView()">Fit to View</button>
+        <button class="btn" onclick="resetCamera()">Reset Camera</button>
+        <button class="btn secondary" onclick="clearModel()">Clear Model</button>
+      </div>
+      
+      <div id="status" class="status">Initializing viewer...</div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  
+  <script>
+    // Global variables for functions
+    let scene, camera, renderer, controls;
+    let currentModel = null;
+    
+    // Define utility functions immediately so they're available when buttons are clicked
+    window.loadSampleModel = function(filename) {
+      if (renderer) {
+        tryLoadModel(filename);
+      } else {
+        updateStatus('Viewer still loading... please wait', 'loading');
+      }
+    };
+    
+    window.fitToView = function() {
+      if (currentModel && camera && controls) {
+        try {
+          // Calculate bounding box
+          const box = new THREE.Box3().setFromObject(currentModel);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          
+          // Set camera position
+          const maxSize = Math.max(size.x, size.y, size.z);
+          const distance = maxSize * 2;
+          
+          camera.position.set(
+            center.x + distance,
+            center.y + distance, 
+            center.z + distance
+          );
+          
+          controls.target.copy(center);
+          controls.update();
+          
+          updateStatus('Fitted to view', 'ready');
+        } catch (error) {
+          updateStatus('Fit to view failed', 'error');
+        }
+      } else if (!renderer) {
+        updateStatus('Viewer still loading... please wait', 'loading');
+      } else {
+        updateStatus('No model loaded', 'ready');
+      }
+    };
+    
+    window.resetCamera = function() {
+      if (camera && controls) {
+        try {
+          camera.position.set(50, 50, 50);
+          controls.target.set(0, 0, 0);
+          controls.update();
+          updateStatus('Camera reset', 'ready');
+        } catch (error) {
+          updateStatus('Camera reset failed', 'error');
+        }
+      } else {
+        updateStatus('Viewer still loading... please wait', 'loading');
+      }
+    };
+    
+    window.clearModel = function() {
+      if (currentModel && scene) {
+        try {
+          scene.remove(currentModel);
+          currentModel = null;
+          updateStatus('Model cleared', 'ready');
+          
+          // Reset button states
+          const buttons = document.querySelectorAll('.model-btn');
+          buttons.forEach(btn => {
+            btn.classList.remove('loaded', 'loading', 'error');
+          });
+        } catch (error) {
+          updateStatus('Clear model failed', 'error');
+        }
+      } else {
+        updateStatus('No model to clear', 'ready');
+      }
+    };
+    
+    function updateStatus(message, type = 'ready') {
+      const statusEl = document.getElementById('status');
+      if (statusEl) {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+      }
+    }
+  </script>
+  
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+    // Make THREE globally available
+    window.THREE = THREE;
+    
+    // Initialize the viewer
+    async function initViewer() {
+      try {
+        updateStatus('Initializing viewer...', 'loading');
+        
+        const container = document.getElementById('container');
+        
+        // Create scene
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f0f0);
+        window.scene = scene;
+        
+        // Create camera
+        camera = new THREE.PerspectiveCamera(
+          75, 
+          container.clientWidth / container.clientHeight, 
+          0.1, 
+          1000
+        );
+        camera.position.set(50, 50, 50);
+        window.camera = camera;
+        
+        // Create renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+        window.renderer = renderer;
+        
+        // Create controls
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 0, 0);
+        controls.update();
+        window.controls = controls;
+        
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(50, 50, 50);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        scene.add(directionalLight);
+        
+        // Create GLTF loader (for converted IFC models)
+        const gltfLoader = new GLTFLoader();
+        window.gltfLoader = gltfLoader;
+        
+        // Handle file input - for now, show message about file format
+        const fileInput = document.getElementById('file-input');
+        fileInput.addEventListener('change', async (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            if (file.name.toLowerCase().endsWith('.ifc')) {
+              updateStatus('IFC files need to be converted to GLB/GLTF format first. Please use IFC conversion tools.', 'error');
+            } else if (file.name.toLowerCase().endsWith('.glb') || file.name.toLowerCase().endsWith('.gltf')) {
+              await loadModelFile(file);
+            } else {
+              updateStatus('Please select a GLB or GLTF file (converted from IFC)', 'error');
+            }
+          }
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+          camera.aspect = container.clientWidth / container.clientHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+        
+        // Animation loop
+        function animate() {
+          requestAnimationFrame(animate);
+          controls.update();
+          renderer.render(scene, camera);
+        }
+        animate();
+        
+        updateStatus('Viewer ready! Note: IFC files need to be converted to GLB/GLTF format first.', 'success');
+        
+      } catch (error) {
+        console.error('Failed to initialize viewer:', error);
+        updateStatus(`Initialization failed: ${error.message}`, 'error');
+      }
+    }
+    
+    // Load model file (GLB/GLTF)
+    async function loadModelFile(file) {
+      try {
+        updateStatus(`Loading ${file.name}...`, 'loading');
+        
+        // Clear existing model
+        if (currentModel) {
+          scene.remove(currentModel);
+        }
+        
+        // Create URL for file
+        const url = URL.createObjectURL(file);
+        
+        // Load GLTF file
+        const gltf = await new Promise((resolve, reject) => {
+          window.gltfLoader.load(
+            url, 
+            resolve,
+            (progress) => {
+              const percent = Math.round((progress.loaded / progress.total) * 100);
+              updateStatus(`Loading ${file.name}... ${percent}%`, 'loading');
+            },
+            reject
+          );
+        });
+        
+        // Add model to scene
+        const model = gltf.scene;
+        scene.add(model);
+        currentModel = model;
+        
+        // Clean up URL
+        URL.revokeObjectURL(url);
+        
+        updateStatus(`${file.name} loaded successfully!`, 'success');
+        
+      } catch (error) {
+        console.error('Failed to load model file:', error);
+        updateStatus(`Failed to load ${file.name}: ${error.message}`, 'error');
+      }
+    }
+    
+    // Load sample model - create placeholder 3D models since IFC requires conversion
+    window.tryLoadModel = async function(filename) {
+      try {
+        const button = document.querySelector(`[onclick="loadSampleModel('${filename}')"]`);
+        button.classList.add('loading');
+        
+        updateStatus(`Creating placeholder for ${filename}...`, 'loading');
+        
+        // Clear existing model
+        if (currentModel) {
+          scene.remove(currentModel);
+        }
+        
+        // Create a placeholder building model
+        const group = new THREE.Group();
+        
+        // Building base
+        const baseGeometry = new THREE.BoxGeometry(20, 5, 30);
+        const baseMaterial = new THREE.MeshLambertMaterial({ color: 0x8B4513 });
+        const base = new THREE.Mesh(baseGeometry, baseMaterial);
+        base.position.y = 2.5;
+        group.add(base);
+        
+        // Building floors
+        for (let i = 0; i < 3; i++) {
+          const floorGeometry = new THREE.BoxGeometry(18, 3, 28);
+          const floorMaterial = new THREE.MeshLambertMaterial({ 
+            color: new THREE.Color().setHSL(0.6, 0.3, 0.7 + i * 0.1)
+          });
+          const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+          floor.position.y = 6 + i * 4;
+          group.add(floor);
+        }
+        
+        // Roof
+        const roofGeometry = new THREE.ConeGeometry(15, 8, 4);
+        const roofMaterial = new THREE.MeshLambertMaterial({ color: 0x654321 });
+        const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+        roof.position.y = 22;
+        roof.rotation.y = Math.PI / 4;
+        group.add(roof);
+        
+        // Add some windows
+        for (let floor = 0; floor < 3; floor++) {
+          for (let i = 0; i < 6; i++) {
+            const windowGeometry = new THREE.PlaneGeometry(1.5, 1.5);
+            const windowMaterial = new THREE.MeshLambertMaterial({ color: 0x87CEEB });
+            const window1 = new THREE.Mesh(windowGeometry, windowMaterial);
+            window1.position.set(-8 + i * 3, 6 + floor * 4, 14.1);
+            group.add(window1);
+            
+            const window2 = new THREE.Mesh(windowGeometry, windowMaterial);
+            window2.position.set(-8 + i * 3, 6 + floor * 4, -14.1);
+            group.add(window2);
+          }
+        }
+        
+        // Add to scene
+        scene.add(group);
+        currentModel = group;
+        
+        button.classList.remove('loading');
+        button.classList.add('loaded');
+        updateStatus(`Placeholder building for ${filename} created. Note: Real IFC files need GLB/GLTF conversion.`, 'success');
+        
+      } catch (error) {
+        console.error('Failed to create sample model:', error);
+        const button = document.querySelector(`[onclick="loadSampleModel('${filename}')"]`);
+        button.classList.remove('loading');
+        button.classList.add('error');
+        updateStatus(`Failed to create placeholder for ${filename}: ${error.message}`, 'error');
+      }
+    };
+    
+    // Initialize when DOM is loaded
+    initViewer();
+  </script>
+</body>
+</html>
+
+    // Global variables
+    let components;
+    let world;
+    let fragments;
+    
+    // Initialize the viewer
+    async function initViewer() {
+      try {
+        updateStatus('Initializing modern viewer...', 'loading');
+        
+        const container = document.getElementById('viewer-container');
+        
+        // Initialize the components
+        components = new OBC.Components();
+        
+        // Create a world
+        const worlds = components.get(OBC.Worlds);
+        world = worlds.create();
+        
+        // Create a simple scene, camera and renderer
+        world.scene = new OBC.SimpleScene(components);
+        world.renderer = new OBCF.PostproductionRenderer(components, container);
+        world.camera = new OBC.SimpleCamera(components);
+        
+        // Initialize the world
+        components.init();
+        
+        // Set up the camera position
+        world.camera.controls.setLookAt(10, 10, 10, 0, 0, 0);
+        
+        // Set up fragments manager for IFC loading
+        fragments = components.get(OBC.FragmentsManager);
+        
+        // Get the IFC loader
+        const ifcLoader = components.get(OBC.IfcLoader);
+        await ifcLoader.setup();
+        
+        // Set up file input
+        const fileInput = document.getElementById('file-input');
+        fileInput.addEventListener('change', async (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            await loadIfcFile(file);
+          }
+        });
+        
+        // Make functions globally available
+        window.loadSampleModel = loadSampleModel;
+        window.fitToView = fitToView;
+        window.resetCamera = resetCamera;
+        window.clearModel = clearModel;
+        
+        updateStatus('Modern viewer ready! Choose an IFC file to load.', 'success');
+        
+      } catch (error) {
+        console.error('Failed to initialize viewer:', error);
+        updateStatus(`Initialization failed: ${error.message}`, 'error');
+      }
+    }
+    
+    // Load IFC file
+    async function loadIfcFile(file) {
+      try {
+        updateStatus(`Loading ${file.name}...`, 'loading');
+        
+        // Clear existing models
+        fragments.dispose();
+        
+        // Load the IFC file
+        const buffer = await file.arrayBuffer();
+        const model = await components.get(OBC.IfcLoader).load(new Uint8Array(buffer));
+        
+        // Add to scene
+        world.scene.three.add(model);
+        
+        // Fit to view
+        await world.camera.controls.fitToSphere(model, true);
+        
+        updateStatus(`${file.name} loaded successfully!`, 'success');
+        
+      } catch (error) {
+        console.error('Failed to load IFC file:', error);
+        updateStatus(`Failed to load ${file.name}: ${error.message}`, 'error');
+      }
+    }
+    
+    // Load sample model
+    async function loadSampleModel(filename) {
+      try {
+        const button = document.querySelector(`[onclick="loadSampleModel('${filename}')"]`);
+        button.classList.add('loading');
+        
+        updateStatus(`Loading ${filename}...`, 'loading');
+        
+        // Clear existing models
+        fragments.dispose();
+        
+        // Try different paths
+        const paths = [
+          `../models/${filename}`,
+          `models/${filename}`,
+          `http://localhost:8000/models/${filename}`
+        ];
+        
+        let loaded = false;
+        for (const path of paths) {
+          try {
+            const response = await fetch(path);
+            if (!response.ok) continue;
+            
+            const buffer = await response.arrayBuffer();
+            const model = await components.get(OBC.IfcLoader).load(new Uint8Array(buffer));
+            
+            // Add to scene
+            world.scene.three.add(model);
+            
+            // Fit to view
+            await world.camera.controls.fitToSphere(model, true);
+            
+            button.classList.remove('loading');
+            button.classList.add('loaded');
+            updateStatus(`${filename} loaded from ${path}`, 'success');
+            loaded = true;
+            break;
+            
+          } catch (pathError) {
+            console.warn(`Failed to load from ${path}:`, pathError);
+          }
+        }
+        
+        if (!loaded) {
+          button.classList.remove('loading');
+          button.classList.add('error');
+          updateStatus(`Could not find ${filename}`, 'error');
+        }
+        
+      } catch (error) {
+        console.error('Failed to load sample model:', error);
+        const button = document.querySelector(`[onclick="loadSampleModel('${filename}')"]`);
+        button.classList.remove('loading');
+        button.classList.add('error');
+        updateStatus(`Failed to load ${filename}: ${error.message}`, 'error');
+      }
+    }
+    
+    // Utility functions
+    function fitToView() {
+      try {
+        const meshes = [];
+        world.scene.three.traverse((child) => {
+          if (child.isMesh) {
+            meshes.push(child);
+          }
+        });
+        
+        if (meshes.length > 0) {
+          const box = new THREE.Box3();
+          meshes.forEach(mesh => box.expandByObject(mesh));
+          
+          const sphere = new THREE.Sphere();
+          box.getBoundingSphere(sphere);
+          
+          world.camera.controls.fitToSphere(sphere, true);
+          updateStatus('Fitted to view', 'ready');
+        } else {
+          updateStatus('No models to fit', 'ready');
+        }
+      } catch (error) {
+        updateStatus('Fit to view failed', 'error');
+      }
+    }
+    
+    function resetCamera() {
+      try {
+        world.camera.controls.setLookAt(10, 10, 10, 0, 0, 0);
+        updateStatus('Camera reset', 'ready');
+      } catch (error) {
+        updateStatus('Camera reset failed', 'error');
+      }
+    }
+    
+    function clearModel() {
+      try {
+        fragments.dispose();
+        updateStatus('Models cleared', 'ready');
+        
+        // Reset button states
+        const buttons = document.querySelectorAll('.model-btn');
+        buttons.forEach(btn => {
+          btn.classList.remove('loaded', 'loading', 'error');
+        });
+      } catch (error) {
+        updateStatus('Clear models failed', 'error');
+      }
+    }
+    
+    function updateStatus(message, type = 'ready') {
+      const statusEl = document.getElementById('status');
+      if (statusEl) {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+      }
+    }
+    
+    // Initialize when DOM is loaded
+    initViewer();
+  </script>
+</body>
+</html>

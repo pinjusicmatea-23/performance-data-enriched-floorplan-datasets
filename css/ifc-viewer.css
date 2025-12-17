@@ -34,19 +34,42 @@
 
 .ifc-controls .btn {
     padding: 0.75rem 1.5rem;
-    background-color: #28a745;
+    background-color: #2563eb;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     font-weight: 500;
     font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .ifc-controls .btn:hover {
-    background-color: #218838;
+    background-color: #1d4ed8;
     transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.ifc-controls .btn.secondary {
+    background-color: #64748b;
+    color: white;
+}
+
+.ifc-controls .btn.secondary:hover {
+    background-color: #475569;
+    box-shadow: 0 4px 8px rgba(100, 116, 139, 0.3);
+}
+
+.ifc-controls .btn.success {
+    background-color: #059669;
+    color: white;
+}
+
+.ifc-controls .btn.success:hover {
+    background-color: #047857;
+    box-shadow: 0 4px 8px rgba(5, 150, 105, 0.3);
 }
 
 .ifc-controls .btn:active {
