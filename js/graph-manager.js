@@ -156,9 +156,9 @@ class GraphManager {
             // Show performance tips for large graphs
             if (window.performanceOptimizer) {
                 const tips = window.performanceOptimizer.getLoadingTips('graph');
-                this.showNotification(`Loading: ${randomGraph.title}<br><br><strong>Tips:</strong> ${tips[0]}`, 'info', 5000);
+                // this.showNotification(`Loading: ${randomGraph.title}<br><br><strong>Tips:</strong> ${tips[0]}`, 'info', 5000); // Disabled popup
             } else {
-                this.showNotification(`Loading: ${randomGraph.title}`, 'info');
+                // this.showNotification(`Loading: ${randomGraph.title}`, 'info'); // Disabled popup
             }
             
             window.loadGraph(randomGraph.filename);
@@ -300,7 +300,7 @@ class EnhancedGraphViewer extends GraphViewer {
         window.loadGraph = (graphName) => {
             const graph = this.graphManager.getGraphByFilename(graphName);
             if (graph) {
-                this.graphManager.showNotification(`Loading: ${graph.title}`, 'info');
+                // this.graphManager.showNotification(`Loading: ${graph.title}`, 'info'); // Disabled popup notification
                 this.updateGraphMetadata(graph);
             }
             originalLoadGraph(graphName);

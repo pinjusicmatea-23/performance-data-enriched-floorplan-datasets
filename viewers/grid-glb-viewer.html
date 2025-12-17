@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GLB Models Grid Viewer - 3x2 Layout</title>
+  <style>
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h1 {
+      margin: 0;
+      color: #1e293b;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .grid-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 2px;
+      padding: 2px;
+      background: #e2e8f0;
+    }
+    
+    .viewer-cell {
+      background: white;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .viewer-cell canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+    
+    .cell-label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      z-index: 100;
+    }
+    
+    .error-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      text-align: center;
+      font-size: 0.9rem;
+      max-width: 80%;
+      z-index: 200;
+    }
+    
+    .controls {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      gap: 0.25rem;
+      z-index: 100;
+    }
+    
+    .download-btn {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(59, 130, 246, 0.8);
+      color: white;
+      border: none;
+      padding: 0.4rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .download-btn:hover {
+      background: rgba(59, 130, 246, 1);
+      transform: translateY(-1px);
+    }
+    
+    .control-btn {
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: none;
+      padding: 0.25rem;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      transition: background 0.2s;
+    }
+    
+    .control-btn:hover {
+      background: rgba(0, 0, 0, 0.9);
+    }
+    
+    @media (max-width: 768px) {
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>GLB Models Grid Viewer (3x2)</h1>
+  </div>
+  
+  <div class="grid-container">
+    <div class="viewer-cell" id="viewer-1">
+      <div class="cell-label">Building ID 18277</div>
+      <button class="download-btn" onclick="downloadIFC('18277.ifc')">
+        ⬇ IFC
+      </button>
+      <div class="controls">
+        <button class="control-btn" onclick="resetCamera(0)">⌂</button>
+        <button class="control-btn" onclick="fitToView(0)">⊞</button>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-2">
+      <div class="cell-label">Building ID 2103</div>
+      <button class="download-btn" onclick="downloadIFC('2103.ifc')">
+        ⬇ IFC
+      </button>
+      <div class="controls">
+        <button class="control-btn" onclick="resetCamera(1)">⌂</button>
+        <button class="control-btn" onclick="fitToView(1)">⊞</button>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-3">
+      <div class="cell-label">Building ID 2191</div>
+      <button class="download-btn" onclick="downloadIFC('2191.ifc')">
+        ⬇ IFC
+      </button>
+      <div class="controls">
+        <button class="control-btn" onclick="resetCamera(2)">⌂</button>
+        <button class="control-btn" onclick="fitToView(2)">⊞</button>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-4">
+      <div class="cell-label">Building ID 668</div>
+      <button class="download-btn" onclick="downloadIFC('668.ifc')">
+        ⬇ IFC
+      </button>
+      <div class="controls">
+        <button class="control-btn" onclick="resetCamera(3)">⌂</button>
+        <button class="control-btn" onclick="fitToView(3)">⊞</button>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-5">
+      <div class="cell-label">Building ID 822</div>
+      <button class="download-btn" onclick="downloadIFC('822.ifc')">
+        ⬇ IFC
+      </button>
+      <div class="controls">
+        <button class="control-btn" onclick="resetCamera(4)">⌂</button>
+        <button class="control-btn" onclick="fitToView(4)">⊞</button>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-6">
+      <div class="cell-label">Building ID 823</div>
+      <button class="download-btn" onclick="downloadIFC('823.ifc')">
+        ⬇ IFC
+      </button>
+      <div class="controls">
+        <button class="control-btn" onclick="resetCamera(5)">⌂</button>
+        <button class="control-btn" onclick="fitToView(5)">⊞</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+    // Global arrays to store viewers
+    const viewers = [];
+    const models = [
+      { filename: '18277.glb', name: '18277' },
+      { filename: '2103.glb', name: '2103' },
+      { filename: '2191.glb', name: '2191' },
+      { filename: '668.glb', name: '668' },
+      { filename: '822.glb', name: '822' },
+      { filename: '823.glb', name: '823' }
+    ];
+
+    class ModelViewer {
+      constructor(containerId, modelPath, modelName) {
+        this.container = document.getElementById(containerId);
+        this.modelPath = modelPath;
+        this.modelName = modelName;
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.controls = null;
+        this.model = null;
+        this.init();
+      }
+
+      init() {
+        // Create scene
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0xf5f5f5);
+
+        // Create camera
+        const containerRect = this.container.getBoundingClientRect();
+        this.camera = new THREE.PerspectiveCamera(
+          45,
+          containerRect.width / containerRect.height,
+          0.1,
+          1000
+        );
+        this.camera.position.set(10, 10, 10);
+
+        // Create renderer
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer.setSize(containerRect.width, containerRect.height);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+        // Add renderer to container
+        this.container.appendChild(this.renderer.domElement);
+
+        // Create controls
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.05;
+        this.controls.enableZoom = true;
+        this.controls.enablePan = true;
+
+        // Add lighting
+        this.setupLighting();
+
+        // Load model
+        this.loadModel();
+
+        // Handle resize
+        this.setupResize();
+
+        // Start render loop
+        this.animate();
+      }
+
+      setupLighting() {
+        // Ambient light
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        this.scene.add(ambientLight);
+
+        // Directional light
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(10, 10, 5);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 1024;
+        directionalLight.shadow.mapSize.height = 1024;
+        this.scene.add(directionalLight);
+
+        // Additional lights for better coverage
+        const light1 = new THREE.DirectionalLight(0xffffff, 0.3);
+        light1.position.set(-10, 5, -5);
+        this.scene.add(light1);
+
+        const light2 = new THREE.DirectionalLight(0xffffff, 0.3);
+        light2.position.set(5, -10, 5);
+        this.scene.add(light2);
+      }
+
+      loadModel() {
+        const loader = new GLTFLoader();
+        
+        loader.load(
+          this.modelPath,
+          (gltf) => {
+            this.model = gltf.scene;
+            
+            // Center and scale the model
+            const box = new THREE.Box3().setFromObject(this.model);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            
+            // Center the model
+            this.model.position.sub(center);
+            
+            // Scale the model to fit nicely
+            const maxDim = Math.max(size.x, size.y, size.z);
+            if (maxDim > 0) {
+              const scale = 8 / maxDim;
+              this.model.scale.setScalar(scale);
+            }
+            
+            // Add model to scene
+            this.scene.add(this.model);
+            
+            // Fit camera to model
+            this.fitCameraToModel();
+            
+            console.log(`${this.modelName} loaded successfully`);
+          },
+          (progress) => {
+            // Loading progress
+            const percent = (progress.loaded / progress.total * 100);
+            console.log(`${this.modelName} loading: ${percent.toFixed(1)}%`);
+          },
+          (error) => {
+            console.error(`Error loading ${this.modelName}:`, error);
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `
+              <div style="font-weight: 600; margin-bottom: 0.5rem;">Failed to load</div>
+              <div style="font-size: 0.8rem;">${this.modelName}</div>
+            `;
+            this.container.appendChild(errorDiv);
+          }
+        );
+      }
+
+      fitCameraToModel() {
+        if (!this.model) return;
+        
+        const box = new THREE.Box3().setFromObject(this.model);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const distance = maxDim * 2;
+        
+        this.camera.position.set(
+          center.x + distance * 0.7,
+          center.y + distance * 0.7,
+          center.z + distance * 0.7
+        );
+        
+        this.controls.target.copy(center);
+        this.controls.update();
+      }
+
+      resetCamera() {
+        this.camera.position.set(10, 10, 10);
+        this.controls.target.set(0, 0, 0);
+        this.controls.update();
+        this.fitCameraToModel();
+      }
+
+      setupResize() {
+        const resizeObserver = new ResizeObserver(() => {
+          const containerRect = this.container.getBoundingClientRect();
+          this.camera.aspect = containerRect.width / containerRect.height;
+          this.camera.updateProjectionMatrix();
+          this.renderer.setSize(containerRect.width, containerRect.height);
+        });
+        
+        resizeObserver.observe(this.container);
+      }
+
+      animate() {
+        requestAnimationFrame(() => this.animate());
+        
+        if (this.controls) {
+          this.controls.update();
+        }
+        
+        if (this.renderer && this.scene && this.camera) {
+          this.renderer.render(this.scene, this.camera);
+        }
+      }
+    }
+
+    // Global functions for controls
+    window.resetCamera = function(index) {
+      if (viewers[index]) {
+        viewers[index].resetCamera();
+      }
+    };
+
+    window.fitToView = function(index) {
+      if (viewers[index]) {
+        viewers[index].fitCameraToModel();
+      }
+    };
+
+    // Download function for IFC files
+    window.downloadIFC = function(filename) {
+      const link = document.createElement('a');
+      link.href = `../models/${filename}`;
+      link.download = filename;
+      link.style.display = 'none';
+      
+      // Add to document, trigger click, then remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Optional: Show download feedback
+      console.log(`Downloading ${filename}...`);
+      
+      // Show temporary feedback message
+      showDownloadFeedback(filename);
+    };
+
+    // Show download feedback
+    function showDownloadFeedback(filename) {
+      const feedback = document.createElement('div');
+      feedback.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        font-size: 0.9rem;
+        font-weight: 500;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: all 0.3s ease;
+      `;
+      feedback.innerHTML = `⬇ Downloading ${filename}`;
+      
+      document.body.appendChild(feedback);
+      
+      // Animate in
+      setTimeout(() => {
+        feedback.style.opacity = '1';
+        feedback.style.transform = 'translateY(0)';
+      }, 100);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        feedback.style.opacity = '0';
+        feedback.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+          if (feedback.parentNode) {
+            document.body.removeChild(feedback);
+          }
+        }, 300);
+      }, 3000);
+    }
+
+    // Initialize all viewers
+    function initViewers() {
+      models.forEach((model, index) => {
+        const containerId = `viewer-${index + 1}`;
+        const modelPath = `../models/glb/${model.filename}`;
+        
+        const viewer = new ModelViewer(containerId, modelPath, model.name);
+        viewers.push(viewer);
+      });
+    }
+
+    // Start initialization when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      initViewers();
+    });
+
+    // Handle window resize for all viewers
+    window.addEventListener('resize', () => {
+      viewers.forEach(viewer => {
+        if (viewer.setupResize) {
+          viewer.setupResize();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

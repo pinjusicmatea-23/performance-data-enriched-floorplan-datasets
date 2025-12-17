@@ -1,3 +1,15 @@
+// Open workflow PDF on page 14 - Define early for inline onclick
+function openWorkflowPDF() {
+    console.log('openWorkflowPDF function called!'); // Debug log
+    // Open PDF with page parameter - page 14
+    const pdfUrl = 'datasets/documentation.pdf#page=14';
+    console.log('Opening PDF:', pdfUrl);
+    window.open(pdfUrl, '_blank');
+}
+
+// Make function globally available immediately
+window.openWorkflowPDF = openWorkflowPDF;
+
 // Main JavaScript functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize smooth scrolling for anchor links
@@ -14,6 +26,77 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize accessibility features
     initAccessibility();
+    
+    // Auto-load first graph when page loads
+    initAutoLoadGraph();
+});
+
+// Auto-load a sample graph when the page opens
+function initAutoLoadGraph() {
+    // Wait a moment for other scripts to load
+    setTimeout(() => {
+        if (typeof window.loadGraph === 'function') {
+            // Load Building 1006 graph as default
+            window.loadGraph('1006_adjacency.html');
+        }
+    }, 1000);
+}
+
+// Fullscreen image functionality
+function openFullscreenImage(img) {
+    const modal = document.getElementById('fullscreen-modal');
+    const fullscreenImg = document.getElementById('fullscreen-image');
+    const caption = document.querySelector('.fullscreen-caption');
+    
+    modal.style.display = 'block';
+    fullscreenImg.src = img.src;
+    fullscreenImg.alt = img.alt;
+    caption.textContent = img.alt;
+    
+    // Prevent body scrolling when modal is open
+    document.body.style.overflow = 'hidden';
+}
+
+function closeFullscreenImage() {
+    const modal = document.getElementById('fullscreen-modal');
+    modal.style.display = 'none';
+    
+    // Re-enable body scrolling
+    document.body.style.overflow = 'auto';
+}
+
+// Add global functions to window object
+window.openFullscreenImage = openFullscreenImage;
+window.closeFullscreenImage = closeFullscreenImage;
+// openWorkflowPDF already assigned at top of file
+
+// Debug log to verify function is attached
+console.log('Functions attached to window:', {
+    openFullscreenImage: typeof window.openFullscreenImage,
+    closeFullscreenImage: typeof window.closeFullscreenImage,
+    openWorkflowPDF: typeof window.openWorkflowPDF
+});
+
+// Add workflow image click handler when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    const workflowImage = document.getElementById('workflow-image');
+    if (workflowImage) {
+        console.log('Workflow image found, attaching click handler...');
+        workflowImage.addEventListener('click', function(event) {
+            event.preventDefault();
+            console.log('Workflow image clicked!');
+            openWorkflowPDF();
+        });
+    } else {
+        console.log('Workflow image not found!');
+    }
+});
+
+// Close fullscreen on Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeFullscreenImage();
+    }
 });
 
 // Smooth scrolling for anchor links
@@ -103,8 +186,8 @@ function initDownloadTracking() {
             // Track download (you can integrate with analytics here)
             console.log(`Download started: ${fileName}`);
             
-            // Show download notification
-            showNotification(`Download started: ${fileName}`, 'success');
+            // Download notification disabled
+            console.log(`Download started: ${fileName}`);
             
             // You can add analytics tracking here
             // gtag('event', 'download', { 'file_name': fileName });
@@ -136,7 +219,7 @@ function initFormHandling() {
             
             if (isValid) {
                 // Process form submission
-                showNotification('Form submitted successfully!', 'success');
+                console.log('Form submitted successfully!');
                 form.reset();
             }
         });
@@ -202,67 +285,10 @@ function initAccessibility() {
     });
 }
 
-// Notification system
+// Notification system disabled per user request
 function showNotification(message, type = 'info') {
-    // Remove existing notifications
-    const existingNotifications = document.querySelectorAll('.notification');
-    existingNotifications.forEach(notification => notification.remove());
-    
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    
-    // Style the notification
-    const colors = {
-        success: '#28a745',
-        error: '#dc3545',
-        warning: '#ffc107',
-        info: '#17a2b8'
-    };
-    
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background-color: ${colors[type] || colors.info};
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 4px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        z-index: 10000;
-        max-width: 300px;
-        word-wrap: break-word;
-        animation: slideIn 0.3s ease;
-    `;
-    
-    // Add animation styles
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
-    `;
-    document.head.appendChild(style);
-    
-    document.body.appendChild(notification);
-    
-    // Auto-remove after 5 seconds
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 5000);
-    
-    // Allow manual close by clicking
-    notification.addEventListener('click', function() {
-        this.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => this.remove(), 300);
-    });
+    // Notifications disabled - output to console instead
+    console.log(`[${type.toUpperCase()}] ${message}`);
 }
 
 // Lazy loading for images
@@ -308,6 +334,10 @@ function initPerformanceMonitoring() {
         
         observer.observe({ entryTypes: ['resource'] });
     }
+// Notification system disabled per user request
+function showNotification(message, type = 'info') {
+    // Notifications disabled - output to console instead
+    console.log(`[${type.toUpperCase()}] ${message}`);
 }
 
 // Search functionality (if search is added later)
@@ -417,3 +447,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 2000);
 });
+
+// End of file

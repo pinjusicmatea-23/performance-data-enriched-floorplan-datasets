@@ -11,18 +11,11 @@ class PerformanceOptimizer {
     init() {
         this.monitorPerformance();
         this.optimizeMemory();
-        this.addPerformanceHints();
+        // this.addPerformanceHints(); // Disabled performance tips popup
     }
 
     monitorPerformance() {
-        // Monitor memory usage
-        if (performance.memory) {
-            setInterval(() => {
-                this.memoryUsage = performance.memory.usedJSHeapSize / 1024 / 1024; // MB
-                this.checkMemoryWarnings();
-            }, 5000);
-        }
-
+        // Memory monitoring disabled per user request
         // Monitor loading performance
         window.addEventListener('beforeunload', () => {
             this.clearLoadingQueue();
@@ -30,23 +23,11 @@ class PerformanceOptimizer {
     }
 
     checkMemoryWarnings() {
-        if (this.memoryUsage > 200) { // 200MB
-            this.showMemoryWarning();
-        }
+        // Disabled - no memory warnings
     }
 
     showMemoryWarning() {
-        const notification = {
-            message: `High memory usage detected (${Math.round(this.memoryUsage)}MB). Consider closing other browser tabs for better performance.`,
-            type: 'warning',
-            duration: 8000
-        };
-        
-        if (window.graphManager) {
-            window.graphManager.showNotification(notification.message, notification.type, notification.duration);
-        } else if (window.ifcViewerManager) {
-            window.ifcViewerManager.showNotification(notification.message, notification.type, notification.duration);
-        }
+        // Disabled - no memory warnings or popups
     }
 
     optimizeMemory() {

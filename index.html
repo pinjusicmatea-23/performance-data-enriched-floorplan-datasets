@@ -56,64 +56,52 @@
         <section id="project-info" class="project-info-section">
             <div class="container">
                 <h2>Project Workflow</h2>
-                <div class="workflow-content">
-                    <div class="workflow-description">
-                        <p>This research project presents a comprehensive methodology for enriching architectural datasets with performance data. Our workflow integrates IFC building models with energy and daylight analysis to create enhanced datasets for machine learning and architectural research.</p>
-                        
-                        <div class="project-highlights">
-                            <div class="highlight-item">
-                                <h3>🏗️ IFC Model Processing</h3>
-                                <p>Automated extraction and processing of building geometry from Industry Foundation Classes (IFC) files</p>
-                            </div>
-                            <div class="highlight-item">
-                                <h3>⚡ Performance Analysis</h3>
-                                <p>Energy simulation and daylight analysis integration across multiple climate zones</p>
-                            </div>
-                            <div class="highlight-item">
-                                <h3>📊 Data Enrichment</h3>
-                                <p>Systematic enhancement of architectural datasets with quantified performance metrics</p>
-                            </div>
-                            <div class="highlight-item">
-                                <h3>🔬 Research Applications</h3>
-                                <p>Machine learning ready datasets for architectural performance prediction and optimization</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="workflow-image">
-                        <img src="images/workflow.png" alt="Project Workflow Diagram" class="workflow-diagram">
-                        <p class="image-caption">Comprehensive workflow for performance data enriched floorplan datasets</p>
-                    </div>
+                <p class="workflow-intro">This research project presents a comprehensive methodology for enriching architectural datasets with performance data. Our workflow integrates IFC building models with energy and daylight analysis to create enhanced datasets for machine learning and architectural research.</p>
+                
+                <!-- Full-width Workflow Image -->
+                <div class="workflow-image-fullwidth">
+                    <img src="images/workflow.png" alt="Project Workflow Diagram" class="workflow-diagram-fullwidth" id="workflow-image" onclick="openWorkflowPDF()" title="Click to view detailed documentation (Page 14)" loading="lazy">
+                    <p class="image-caption">Comprehensive workflow for performance data enriched floorplan datasets (Click image to view detailed documentation)</p>
                 </div>
                 
-                <div class="project-details">
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <div class="detail-label">Research Institution</div>
-                            <div class="detail-value">Institute for Advanced Architecture of Catalonia (IAAC)</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Project Timeline</div>
-                            <div class="detail-value">2024-2025 Master's Thesis</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Dataset Size</div>
-                            <div class="detail-value">17 IFC Models + Performance Data</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Climate Zones</div>
-                            <div class="detail-value">10 Global Climate Contexts</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Analysis Types</div>
-                            <div class="detail-value">Energy + Daylight Performance</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Output Format</div>
-                            <div class="detail-value">Graph Networks + IFC Models</div>
-                        </div>
+                <!-- Project Highlights Cards -->
+                <div class="project-highlights">
+                    <div class="highlight-item">
+                        <h3>IFC Model Processing</h3>
+                        <p>Automated extraction and processing of building geometry from Industry Foundation Classes (IFC) files</p>
+                    </div>
+                    <div class="highlight-item">
+                        <h3>Performance Analysis</h3>
+                        <p>Energy simulation and daylight analysis integration across multiple climate zones</p>
+                    </div>
+                    <div class="highlight-item">
+                        <h3>Data Enrichment</h3>
+                        <p>Systematic enhancement of architectural datasets with quantified performance metrics</p>
+                    </div>
+                    <div class="highlight-item">
+                        <h3>Research Applications</h3>
+                        <p>Machine learning ready datasets for architectural performance prediction and optimization</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- GLB Models Grid Section -->
+        <section id="ifc-models" class="ifc-section">
+            <div class="container">
+                <h2>3D GLB Models Grid (3x2)</h2>
+                
+                <!-- GLB Grid Viewer Container -->
+                <div class="ifc-viewer-container">
+                    <iframe 
+                        id="ifc-viewer-frame" 
+                        class="ifc-viewer-frame" 
+                        src="viewers/grid-glb-viewer.html"
+                        title="GLB Models Grid Viewer - IAAC Performance Dataset">
+                    </iframe>
+                </div>
+
+
             </div>
         </section>
 
@@ -125,9 +113,9 @@
                 <div class="graph-container">
                     <div class="graph-viewer" id="graph-viewer">
                         <div class="graph-placeholder">
-                            <p><strong>Adjacency Graph Viewer</strong></p>
+                            <p><strong>Loading Building 1006 Adjacency Graph...</strong></p>
                             <p>37+ architectural adjacency graphs available</p>
-                            <p>Use the controls below to browse and load graphs</p>
+                            <p>Auto-loading sample visualization on page load</p>
                             <p>Supported features:</p>
                             <ul style="text-align: left; margin-top: 1rem;">
                                 <li>Pan and zoom with mouse/touch</li>
@@ -147,23 +135,90 @@
             </div>
         </section>
 
-        <!-- IFC Models Section -->
-        <section id="ifc-models" class="ifc-section">
+        <!-- Data Preview Section -->
+        <section id="data-preview" class="data-section">
             <div class="container">
-                <h2>3D IFC Models</h2>
-                <p>Explore architectural models in full 3D with pan, rotate, and zoom capabilities.</p>
+                <h2>Dataset Explorer</h2>
+                <p>Interactive preview and filtering of architectural performance data. Use SQL-like queries and filters to explore the dataset.</p>
                 
-                <!-- IFC Viewer Container -->
-                <div class="ifc-viewer-container">
-                    <iframe 
-                        id="ifc-viewer-frame" 
-                        class="ifc-viewer-frame" 
-                        src="viewers/modern-ifc-viewer.html"
-                        title="Modern IFC Viewer - IAAC Performance Dataset">
-                    </iframe>
+                <div class="data-container">
+                    <!-- Query Interface -->
+                    <div class="query-panel">
+                        <h3>Data Query & Filters</h3>
+                        <div class="query-controls">
+                            <div class="control-group">
+                                <label>SQL-like Query:</label>
+                                <input type="text" id="sql-query" placeholder="e.g., SELECT * WHERE apartment_count > 10" class="query-input">
+                                <button class="btn" onclick="executeQuery()">Execute Query</button>
+                                <button class="btn secondary" onclick="resetQuery()">Reset</button>
+                            </div>
+                            
+                            <div class="filter-row">
+                                <div class="filter-group">
+                                    <label>Apartment Count:</label>
+                                    <div class="range-filter">
+                                        <input type="number" id="apartment-min" placeholder="Min" min="1" max="100" onchange="applyFilters()" class="range-input">
+                                        <span>-</span>
+                                        <input type="number" id="apartment-max" placeholder="Max" min="1" max="100" onchange="applyFilters()" class="range-input">
+                                    </div>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Levels Count:</label>
+                                    <div class="range-filter">
+                                        <input type="number" id="levels-min" placeholder="Min" min="1" max="30" onchange="applyFilters()" class="range-input">
+                                        <span>-</span>
+                                        <input type="number" id="levels-max" placeholder="Max" min="1" max="30" onchange="applyFilters()" class="range-input">
+                                    </div>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Climate Zone:</label>
+                                    <select id="climate-filter" onchange="applyFilters()">
+                                        <option value="">All Climates</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-row">
+                                <div class="filter-group">
+                                    <label>Analysis Type:</label>
+                                    <select id="analysis-filter" onchange="applyFilters()">
+                                        <option value="">All Types</option>
+                                        <option value="building">Building Info</option>
+                                        <option value="windows">Windows Simulation</option>
+                                        <option value="rooms">Rooms Simulation</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Table -->
+                    <div class="data-preview-container">
+                        <div class="data-header">
+                            <h4>Dataset Preview</h4>
+                            <div class="data-actions">
+                                <button class="btn secondary" onclick="exportFilteredData('csv')">Export CSV</button>
+                                <button class="btn secondary" onclick="exportFilteredData('all')">Export All Datasets</button>
+                                <span id="row-count" class="row-counter">Loading...</span>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container" id="data-table-container">
+                            <p>Dataset will load here...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Examples -->
+                    <div class="query-examples">
+                        <h4>Quick Query Examples:</h4>
+                        <div class="example-buttons">
+                            <button class="btn example-btn" onclick="loadExampleQuery('building')">Buildings > 1000 ID</button>
+                            <button class="btn example-btn" onclick="loadExampleQuery('energy')">High Energy Performance</button>
+                            <button class="btn example-btn" onclick="loadExampleQuery('daylight')">Daylight Analysis</button>
+                            <button class="btn example-btn" onclick="loadExampleQuery('climate')">Specific Climate</button>
+                        </div>
+                    </div>
                 </div>
-
-
             </div>
         </section>
 
@@ -191,41 +246,14 @@
                 </div>
             </div>
         </section>
-
-        <!-- Quick Links Section -->
-        <section class="quick-links">
-            <div class="container">
-                <h2>Quick Links</h2>
-                <div class="links-grid">
-                    <div class="link-card">
-                        <h3>Blog</h3>
-                        <p>Latest updates and insights about our architectural dataset.</p>
-                        <a href="pages/blog.html" class="btn">Read Blog</a>
-                    </div>
-                    <div class="link-card">
-                        <h3>Sources</h3>
-                        <p>References and external resources used in our dataset.</p>
-                        <a href="pages/sources.html" class="btn">View Sources</a>
-                    </div>
-                    <div class="link-card">
-                        <h3>Visualizations</h3>
-                        <p>Interactive adjacency graphs showing spatial relationships in buildings.</p>
-                        <a href="#graphs" class="btn">View Graphs</a>
-                    </div>
-                    <div class="link-card">
-                        <h3>IFC Models</h3>
-                        <p>Interactive 3D building models with full navigation controls.</p>
-                        <a href="#ifc-models" class="btn">Explore Models</a>
-                    </div>
-                    <div class="link-card">
-                        <h3>Data Usage</h3>
-                        <p>Learn how to properly cite and use our dataset.</p>
-                        <a href="pages/data-usage.html" class="btn">Usage Guidelines</a>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
+
+    <!-- Fullscreen Image Modal -->
+    <div id="fullscreen-modal" class="fullscreen-modal" onclick="closeFullscreenImage()">
+        <span class="close-fullscreen">&times;</span>
+        <img id="fullscreen-image" class="fullscreen-content">
+        <div class="fullscreen-caption"></div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -240,11 +268,11 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="js/menu.js"></script>
+    <script src="js/dataset-explorer.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/performance-optimizer.js"></script>
     <script src="js/graph-viewer.js"></script>
     <script src="js/enhanced-graph-loader.js"></script>
     <script src="js/graph-manager.js"></script>
-    <script src="js/main.js"></script>
 </body>
 </html>
