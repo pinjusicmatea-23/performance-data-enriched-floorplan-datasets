@@ -147,38 +147,52 @@
                         <h3>Data Query & Filters</h3>
                         <div class="query-controls">
                             <div class="control-group">
-                                <label>SQL-like Query:</label>
+                                <label>Advanced Multi-Dataset Filters:</label>
+                                <div class="advanced-filter-container">
+                                    <div class="filter-selector">
+                                        <button type="button" class="dropdown-toggle" id="column-selector-toggle" onclick="toggleColumnSelector()">
+                                            <span>Select Columns to Filter</span>
+                                            <span class="dropdown-arrow">▼</span>
+                                        </button>
+                                        <div class="column-dropdown" id="column-dropdown" style="display: none;">
+                                            <div class="dataset-section" data-dataset="building">
+                                                <h4>Building Info</h4>
+                                                <div class="column-list" id="building-columns"></div>
+                                            </div>
+                                            <div class="dataset-section" data-dataset="rooms">
+                                                <h4>Rooms Data</h4>
+                                                <div class="column-list" id="rooms-columns"></div>
+                                            </div>
+                                            <div class="dataset-section" data-dataset="windows">
+                                                <h4>Windows Data</h4>
+                                                <div class="column-list" id="windows-columns"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="active-filters" id="active-filters">
+                                        <div class="filter-instructions">Select columns above to add filters</div>
+                                    </div>
+                                    <div class="filter-actions">
+                                        <button class="btn" onclick="applyAdvancedFilters()">Apply Filters</button>
+                                        <button class="btn secondary" onclick="clearAllFilters()">Clear All</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="legacy-query" style="margin-top: 1rem;">
+                                <label>SQL-like Query (Legacy):</label>
                                 <input type="text" id="sql-query" placeholder="e.g., SELECT * WHERE apartment_count > 10" class="query-input">
-                                <button class="btn" onclick="executeQuery()">Execute Query</button>
+                                <button class="btn secondary" onclick="executeQuery()">Execute Query</button>
                                 <button class="btn secondary" onclick="resetQuery()">Reset</button>
                             </div>
                             
-                            <div class="filter-row">
-                                <div class="filter-group">
-                                    <label>Apartment Count:</label>
-                                    <div class="range-filter">
-                                        <input type="number" id="apartment-min" placeholder="Min" min="1" max="100" onchange="applyFilters()" class="range-input">
-                                        <span>-</span>
-                                        <input type="number" id="apartment-max" placeholder="Max" min="1" max="100" onchange="applyFilters()" class="range-input">
-                                    </div>
-                                </div>
-                                <div class="filter-group">
-                                    <label>Levels Count:</label>
-                                    <div class="range-filter">
-                                        <input type="number" id="levels-min" placeholder="Min" min="1" max="30" onchange="applyFilters()" class="range-input">
-                                        <span>-</span>
-                                        <input type="number" id="levels-max" placeholder="Max" min="1" max="30" onchange="applyFilters()" class="range-input">
-                                    </div>
-                                </div>
+                            <div class="filter-row" style="margin-top: 1rem;">
                                 <div class="filter-group">
                                     <label>Climate Zone:</label>
                                     <select id="climate-filter" onchange="applyFilters()">
                                         <option value="">All Climates</option>
                                     </select>
                                 </div>
-                            </div>
-                            
-                            <div class="filter-row">
                                 <div class="filter-group">
                                     <label>Analysis Type:</label>
                                     <select id="analysis-filter" onchange="applyFilters()">
@@ -188,6 +202,7 @@
                                         <option value="rooms">Rooms Simulation</option>
                                     </select>
                                 </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -212,10 +227,16 @@
                     <div class="query-examples">
                         <h4>Quick Query Examples:</h4>
                         <div class="example-buttons">
-                            <button class="btn example-btn" onclick="loadExampleQuery('building')">Buildings > 1000 ID</button>
-                            <button class="btn example-btn" onclick="loadExampleQuery('energy')">High Energy Performance</button>
-                            <button class="btn example-btn" onclick="loadExampleQuery('daylight')">Daylight Analysis</button>
-                            <button class="btn example-btn" onclick="loadExampleQuery('climate')">Specific Climate</button>
+                            <button class="btn example-btn" onclick="loadExampleQuery('building')">Buildings > 10 Apt</button>
+                            <button class="btn example-btn" onclick="loadExampleQuery('energy')">High Sun Hours</button>
+                            <button class="btn example-btn" onclick="loadExampleQuery('daylight')">High Daylight</button>
+                            <button class="btn example-btn" onclick="loadExampleQuery('climate')">Bangkok Climate</button>
+                            <button class="btn example-btn" onclick="loadExampleQuery('rooms_kitchen')">Kitchen Spaces</button>
+                            <button class="btn example-btn" onclick="loadExampleQuery('rooms_living')">Living Rooms</button>
+                        </div>
+                        <div class="query-help">
+                            <p><strong>Cross-Dataset Queries:</strong> Use <code>FROM rooms WHERE space_name = 'KITCHEN'</code> or <code>FROM windows WHERE Sun Hours_summer > 5</code></p>
+                            <p><strong>Column Aliases:</strong> Use <code>space_name</code>, <code>space_type</code>, <code>daylight_factor</code>, <code>building_id</code></p>
                         </div>
                     </div>
                 </div>
@@ -234,14 +255,88 @@
                         <a href="datasets/full-dataset.zip" class="btn btn-download" download>Download ZIP</a>
                     </div>
                     <div class="download-item">
-                        <h3>Sample Data</h3>
-                        <p>Sample subset for testing and evaluation purposes.</p>
-                        <a href="datasets/sample-data.csv" class="btn btn-download" download>Download CSV</a>
+                        <h3>CSV Dataset</h3>
+                        <p>Complete dataset in CSV format for data analysis and research.</p>
+                        <a href="datasets/csv-dataset.zip" class="btn btn-download" download>Download ZIP</a>
                     </div>
                     <div class="download-item">
                         <h3>Documentation</h3>
                         <p>Data dictionary and usage guidelines.</p>
                         <a href="datasets/documentation.pdf" class="btn btn-download" download>Download PDF</a>
+                    </div>
+                    <div class="download-item">
+                        <h3>Swiss Dwellings</h3>
+                        <p>Original Swiss residential building dataset used as foundation.</p>
+                        <a href="datasets/swiss-dwellings-v3.0.0.zip" class="btn btn-download" download>Download ZIP</a>
+                    </div>
+                    <div class="download-item">
+                        <h3>IFC</h3>
+                        <p>3D building information models in Industry Foundation Classes format.</p>
+                        <a href="datasets/ifc.zip" class="btn btn-download" download>Download ZIP</a>
+                    </div>
+                    <div class="download-item">
+                        <h3>Graphs</h3>
+                        <p>Interactive adjacency graphs and network visualizations.</p>
+                        <a href="datasets/graphs.zip" class="btn btn-download" download>Download ZIP</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Workflow Process Section -->
+        <section id="workflow-process" class="workflow-process-section">
+            <div class="container">
+                <h2>Dataset Creation Process</h2>
+                <p>Our dataset enhancement workflow consists of multiple stages, each building upon established architectural databases and simulation methodologies.</p>
+                
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="step-number">01</div>
+                        <div class="step-content">
+                            <h3>Foundation Dataset: Swiss Dwellings</h3>
+                            <p>We began with the comprehensive Swiss residential building dataset from ETH Zurich, which provides authentic architectural geometries and spatial configurations from real-world buildings.</p>
+                            <div class="step-details">
+                                <ul>
+                                    <li>3,000+ residential building units</li>
+                                    <li>Detailed room-level spatial data</li>
+                                    <li>Authentic Swiss architectural typologies</li>
+                                    <li>Geographic and contextual metadata</li>
+                                </ul>
+                                <a href="https://zenodo.org/records/7788422" class="btn btn-secondary" target="_blank" rel="noopener">View Original Dataset →</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="step-number">02</div>
+                        <div class="step-content">
+                            <h3>Performance Simulation</h3>
+                            <p>Each building geometry underwent comprehensive environmental performance analysis using industry-standard simulation tools.</p>
+                            <div class="step-details">
+                                <ul>
+                                    <li>Energy demand calculations across climate zones</li>
+                                    <li>Daylight factor analysis with high-resolution sensor grids</li>
+                                    <li>Solar radiation and sun hour modeling</li>
+                                    <li>Window performance optimization studies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <h3>Data Enhancement & Integration</h3>
+                            <p>Raw simulation outputs were processed, validated, and integrated with spatial data to create our enriched architectural dataset.</p>
+                            <div class="step-details">
+                                <ul>
+                                    <li>Automated data validation and quality control</li>
+                                    <li>Graph network generation for ML applications</li>
+                                    <li>Multi-format export (CSV, IFC, JSON)</li>
+                                    <li>Interactive visualization creation</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
