@@ -146,44 +146,34 @@
                     <div class="query-panel">
                         <h3>Data Query & Filters</h3>
                         <div class="query-controls">
-                            <div class="control-group">
-                                <label>Advanced Multi-Dataset Filters:</label>
-                                <div class="advanced-filter-container">
-                                    <div class="filter-selector">
-                                        <button type="button" class="dropdown-toggle" id="column-selector-toggle" onclick="toggleColumnSelector()">
-                                            <span>Select Columns to Filter</span>
-                                            <span class="dropdown-arrow">▼</span>
-                                        </button>
-                                        <div class="column-dropdown" id="column-dropdown" style="display: none;">
-                                            <div class="dataset-section" data-dataset="building">
-                                                <h4>Building Info</h4>
-                                                <div class="column-list" id="building-columns"></div>
-                                            </div>
-                                            <div class="dataset-section" data-dataset="rooms">
-                                                <h4>Rooms Data</h4>
-                                                <div class="column-list" id="rooms-columns"></div>
-                                            </div>
-                                            <div class="dataset-section" data-dataset="windows">
-                                                <h4>Windows Data</h4>
-                                                <div class="column-list" id="windows-columns"></div>
-                                            </div>
+                            <div class="advanced-filter-container-fullwidth">
+                                <div class="filter-selector">
+                                    <button type="button" class="dropdown-toggle" id="column-selector-toggle" onclick="toggleColumnSelector()">
+                                        <span>Select Columns to Filter</span>
+                                        <span class="dropdown-arrow">▼</span>
+                                    </button>
+                                    <div class="column-dropdown" id="column-dropdown" style="display: none;">
+                                        <div class="dataset-section" data-dataset="building">
+                                            <h4>Building Info</h4>
+                                            <div class="column-list" id="building-columns"></div>
+                                        </div>
+                                        <div class="dataset-section" data-dataset="rooms">
+                                            <h4>Rooms Data</h4>
+                                            <div class="column-list" id="rooms-columns"></div>
+                                        </div>
+                                        <div class="dataset-section" data-dataset="windows">
+                                            <h4>Windows Data</h4>
+                                            <div class="column-list" id="windows-columns"></div>
                                         </div>
                                     </div>
-                                    <div class="active-filters" id="active-filters">
-                                        <div class="filter-instructions">Select columns above to add filters</div>
-                                    </div>
-                                    <div class="filter-actions">
-                                        <button class="btn" onclick="applyAdvancedFilters()">Apply Filters</button>
-                                        <button class="btn secondary" onclick="clearAllFilters()">Clear All</button>
-                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="legacy-query" style="margin-top: 1rem;">
-                                <label>SQL-like Query (Legacy):</label>
-                                <input type="text" id="sql-query" placeholder="e.g., SELECT * WHERE apartment_count > 10" class="query-input">
-                                <button class="btn secondary" onclick="executeQuery()">Execute Query</button>
-                                <button class="btn secondary" onclick="resetQuery()">Reset</button>
+                                <div class="active-filters" id="active-filters">
+                                    <div class="filter-instructions">Select columns above to add filters</div>
+                                </div>
+                                <div class="filter-actions">
+                                    <button class="btn" onclick="applyAdvancedFilters()">Apply Filters</button>
+                                    <button class="btn secondary" onclick="clearAllFilters()">Clear All</button>
+                                </div>
                             </div>
                             
                             <div class="filter-row" style="margin-top: 1rem;">

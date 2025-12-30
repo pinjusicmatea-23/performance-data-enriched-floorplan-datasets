@@ -1459,25 +1459,6 @@ window.toggleColumnSelector = function() {
     }
 };
 
-// Backup event listener in case onclick doesn't work
-document.addEventListener('DOMContentLoaded', function() {
-    // Add a small delay to ensure elements are ready
-    setTimeout(() => {
-        const toggle = document.getElementById('column-selector-toggle');
-        if (toggle) {
-            console.log('Setting up fallback click handler for dropdown toggle');
-            toggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Fallback click handler triggered');
-                window.toggleColumnSelector();
-            });
-        } else {
-            console.warn('Toggle button not found for fallback handler');
-        }
-    }, 2000);
-});
-
 window.toggleColumnFilter = function(dataset, column) {
     if (window.datasetExplorer) {
         window.datasetExplorer.toggleColumnFilter(dataset, column);

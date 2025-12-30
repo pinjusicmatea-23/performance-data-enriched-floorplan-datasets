@@ -1243,14 +1243,25 @@ section {
     margin: 1rem 0;
 }
 
+/* Full-width version */
+.advanced-filter-container-fullwidth {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin: 0;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 .filter-selector {
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .dropdown-toggle {
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.5rem;
     border: 2px solid var(--primary-color);
     background: white;
     color: var(--primary-color);
@@ -1260,15 +1271,26 @@ section {
     justify-content: space-between;
     align-items: center;
     font-weight: 500;
-    transition: var(--transition);
+    font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
 .dropdown-toggle:hover {
-    background: var(--light-color);
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .dropdown-arrow {
-    transition: transform 0.2s ease;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-toggle.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
 }
 
 .dropdown-toggle.active .dropdown-arrow {
@@ -1281,17 +1303,35 @@ section {
     left: 0;
     right: 0;
     background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 2px solid var(--primary-color);
+    border-top: none;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     z-index: 1000;
-    max-height: 400px;
+    max-height: 500px;
     overflow-y: auto;
+    animation: dropdownSlide 0.3s ease-out;
+}
+
+@keyframes dropdownSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .dataset-section {
-    border-bottom: 1px solid #f1f5f9;
-    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.dataset-section:hover {
+    background-color: #f8fafc;
 }
 
 .dataset-section:last-child {
@@ -1299,50 +1339,75 @@ section {
 }
 
 .dataset-section h4 {
-    margin: 0 0 0.75rem 0;
-    color: var(--dark-color);
-    font-size: 0.9rem;
+    margin: 0 0 1rem 0;
+    color: var(--primary-color);
+    font-size: 1rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
 }
 
 .column-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
 }
 
 .column-checkbox {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.column-checkbox:hover {
+    background-color: #f1f5f9;
 }
 
 .column-checkbox input[type="checkbox"] {
     margin: 0;
+    transform: scale(1.2);
 }
 
 .column-checkbox label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     cursor: pointer;
-    color: var(--secondary-color);
+    color: var(--dark-color);
     margin: 0;
+    font-weight: 500;
+    flex: 1;
 }
 
 .active-filters {
-    min-height: 60px;
-    border: 2px dashed #e2e8f0;
+    min-height: 80px;
+    border: 2px dashed #cbd5e0;
     border-radius: var(--border-radius);
-    padding: 1rem;
-    background: #f8fafc;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    margin: 1.5rem 0;
 }
 
 .filter-instructions {
     color: var(--secondary-color);
     text-align: center;
     font-style: italic;
+    font-size: 1rem;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.filter-actions .btn {
+    min-width: 140px;
+    font-weight: 600;
 }
 
 .filter-item {
