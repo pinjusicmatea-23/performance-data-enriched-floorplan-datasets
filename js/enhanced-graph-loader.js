@@ -73,7 +73,7 @@ class EnhancedGraphLoader {
                     resolved = true;
                     resolve(false);
                 }
-            }, 10000); // 10 second timeout
+            }, 30000); // 30 second timeout to allow more time for large files
 
             iframe.onload = () => {
                 if (!resolved) {
@@ -203,17 +203,6 @@ class EnhancedGraphLoader {
             <div class="enhanced-loading-content">
                 <div class="loading-spinner-container">
                     <div class="loading-spinner"></div>
-                    <div class="loading-pulse"></div>
-                </div>
-                <h3>🔄 Loading Graph: ${graphName}</h3>
-                <p>Trying multiple loading strategies for optimal performance...</p>
-                <div class="loading-strategies">
-                    <div class="strategy-item active">📱 IFrame Loading</div>
-                    <div class="strategy-item">🚀 Window Loading</div>
-                    <div class="strategy-item">📥 Direct Fetch</div>
-                </div>
-                <div class="loading-tips">
-                    <p><small>💡 Large graph files may take a moment to load completely</small></p>
                 </div>
             </div>
         `;

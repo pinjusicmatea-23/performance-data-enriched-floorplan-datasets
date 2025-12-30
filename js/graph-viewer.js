@@ -34,8 +34,12 @@ class GraphViewer {
     }
 
     loadGraph(graphName) {
+        console.log('Loading graph:', graphName);
         const viewer = document.getElementById('graph-viewer');
-        if (!viewer) return;
+        if (!viewer) {
+            console.error('Graph viewer element not found');
+            return;
+        }
 
         // Show loading state
         this.showLoading(viewer);
@@ -65,8 +69,8 @@ class GraphViewer {
             this.clearViewer(viewer);
             viewer.appendChild(iframe);
             this.currentGraph = graphName;
-            this.addGraphTools(viewer);
-            this.updateMetadata(graphName);
+            // this.addGraphTools(viewer); // Removed
+            // this.updateMetadata(graphName); // Removed
             
             // Add performance monitoring
             console.log(`Graph ${graphName} loaded successfully`);
@@ -103,7 +107,7 @@ class GraphViewer {
                         // Try direct window.open as fallback
                         this.showTimeoutOptions(viewer, graphName);
                     }
-                }, 15000); // Reduced to 15 seconds for better UX
+                }, 60000); // Increased to 60 seconds to prevent premature timeouts
             })
             .catch(error => {
                 console.error('Graph file check failed:', error);
@@ -143,11 +147,6 @@ class GraphViewer {
         loading.className = 'graph-loading';
         loading.innerHTML = `
             <div class="loading-spinner"></div>
-            <h3>Loading Graph...</h3>
-            <p>Please wait while the graph loads. Large graphs with complex visualizations may take up to 30 seconds.</p>
-            <div class="loading-progress">
-                <div class="progress-bar"></div>
-            </div>
         `;
         viewer.appendChild(loading);
 
@@ -255,8 +254,8 @@ class GraphViewer {
             this.clearViewer(viewer);
             viewer.appendChild(iframe);
             this.currentGraph = graphName;
-            this.addGraphTools(viewer);
-            this.updateMetadata(graphName);
+            // this.addGraphTools(viewer); // Removed
+            // this.updateMetadata(graphName); // Removed
         };
 
         iframe.onload = handleLoad;

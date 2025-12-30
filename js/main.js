@@ -1,15 +1,3 @@
-// Open workflow PDF on page 14 - Define early for inline onclick
-function openWorkflowPDF() {
-    console.log('openWorkflowPDF function called!'); // Debug log
-    // Open PDF with page parameter - page 14
-    const pdfUrl = 'datasets/documentation.pdf#page=14';
-    console.log('Opening PDF:', pdfUrl);
-    window.open(pdfUrl, '_blank');
-}
-
-// Make function globally available immediately
-window.openWorkflowPDF = openWorkflowPDF;
-
 // Main JavaScript functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize smooth scrolling for anchor links

@@ -10,7 +10,6 @@ A modern, responsive website for sharing and visualizing architectural datasets 
 - **🏗️ IFC Model Viewer** - 3D building models with full navigation and inspection tools
 - **⬇️ Dataset Downloads** - Easy access to dataset files with download tracking
 - **📚 Documentation** - Comprehensive guides for data usage and citations
-- **📝 Blog System** - News, updates, and insights about the dataset
 - **🔗 Source References** - Detailed attribution and external links
 - **♿ Accessibility** - WCAG compliant with keyboard navigation support
 
@@ -28,7 +27,6 @@ web/
 │   ├── menu.js             # Menu interactions
 │   └── graph-viewer.js     # Graph viewer logic
 ├── pages/                  # Content pages
-│   ├── blog.html           # Blog with posts and updates
 │   ├── sources.html        # References and external links
 │   └── data-usage.html     # Citation guidelines and terms
 ├── datasets/               # Dataset files for download
@@ -83,10 +81,9 @@ web/
    - `documentation.pdf` - Your data documentation
 
 #### 📝 Content Updates
-1. **Blog Posts**: Edit `pages/blog.html` or add new post entries
-2. **Sources**: Update `pages/sources.html` with your references
-3. **Data Usage**: Modify `pages/data-usage.html` with your citation requirements
-4. **Homepage**: Customize `index.html` with your project details
+1. **Sources**: Update `pages/sources.html` with your references
+2. **Data Usage**: Modify `pages/data-usage.html` with your citation requirements
+3. **Homepage**: Customize `index.html` with your project details
 
 ## 🎨 Customization
 
@@ -164,7 +161,6 @@ For questions about this website template:
 
 ### Planned Features
 - 🔮 Search functionality across content
-- 🔮 User comments system for blog posts
 - 🔮 Advanced graph filtering and controls
 - 🔮 Multi-language support
 - 🔮 Dark mode theme option

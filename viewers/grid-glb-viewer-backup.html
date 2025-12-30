@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GLB Models Grid Viewer - 3x2 Layout</title>
+  <style>
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header h1 {
+      margin: 0;
+      color: #1e293b;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .grid-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 2px;
+      padding: 2px;
+      background: #e2e8f0;
+    }
+    
+    .viewer-cell {
+      background: white;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #666;
+    }
+    
+    .fallback-content {
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .fallback-content h3 {
+      margin: 0 0 1rem 0;
+      color: #333;
+      font-size: 1rem;
+    }
+    
+    .fallback-content p {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>GLB Models Grid Viewer (3x2)</h1>
+  </div>
+  
+  <div class="grid-container">
+    <div class="viewer-cell" id="viewer-1">
+      <div class="fallback-content">
+        <h3>🏢 Building 18277</h3>
+        <p>3D Model Preview</p>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-2">
+      <div class="fallback-content">
+        <h3>🏗️ Building 2103</h3>
+        <p>3D Model Preview</p>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-3">
+      <div class="fallback-content">
+        <h3>🏘️ Building 2191</h3>
+        <p>3D Model Preview</p>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-4">
+      <div class="fallback-content">
+        <h3>🏢 Building 668</h3>
+        <p>3D Model Preview</p>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-5">
+      <div class="fallback-content">
+        <h3>🏗️ Building 822</h3>
+        <p>3D Model Preview</p>
+      </div>
+    </div>
+    
+    <div class="viewer-cell" id="viewer-6">
+      <div class="fallback-content">
+        <h3>🏛️ Building 823</h3>
+        <p>3D Model Preview</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    console.log('Simple GLB viewer loaded - no WebGL required');
+  </script>
+</body>
+</html>

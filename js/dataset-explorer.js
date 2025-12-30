@@ -202,6 +202,16 @@ class DatasetExplorer {
 
             this.datasets[type].data = data;
             this.datasets[type].columns = columns;
+            
+            // Add climate zone for building dataset
+            if (type === 'building') {
+                this.addClimateZoneColumn();
+                // Update columns list to include climate_zone
+                if (!this.datasets[type].columns.includes('climate_zone')) {
+                    this.datasets[type].columns.push('climate_zone');
+                }
+            }
+            
             console.log(`Successfully parsed ${type}: ${data.length} rows`);
 
         } catch (error) {
@@ -230,6 +240,24 @@ class DatasetExplorer {
         return result;
     }
 
+    addClimateZoneColumn() {
+        // Extract climate information from EPW URLs for building dataset
+        this.datasets.building.data.forEach(row => {
+            if (row.epw) {
+                const url = row.epw;
+                const match = url.match(/\/(\w{3})_([^\.]+)/);
+                if (match) {
+                    row.climate_zone = `${match[1]} - ${match[2].replace(/\./g, ' ')}`;
+                } else {
+                    row.climate_zone = 'Unknown';
+                }
+            } else {
+                row.climate_zone = 'No Data';
+            }
+        });
+        console.log('Added climate_zone column to building dataset');
+    }
+
     switchDataset(type) {
         this.currentDataset = type;
         this.filteredData = [...this.datasets[type].data];
@@ -240,6 +268,9 @@ class DatasetExplorer {
 
     updateAnalysisFilter(selectedType) {
         const analysisSelect = document.getElementById('analysis-filter');
+        
+        // Skip if element doesn't exist (removed from UI)
+        if (!analysisSelect) return;
         
         // Clear existing options
         analysisSelect.innerHTML = `
@@ -347,6 +378,9 @@ class DatasetExplorer {
     populateClimateFilter() {
         const climateSelect = document.getElementById('climate-filter');
         
+        // Skip if element doesn't exist (removed from UI)
+        if (!climateSelect) return;
+        
         // Clear existing options except the first one
         while (climateSelect.children.length > 1) {
             climateSelect.removeChild(climateSelect.lastChild);
@@ -391,8 +425,8 @@ class DatasetExplorer {
         const apartmentMax = parseInt(document.getElementById('apartment-max').value) || null;
         const levelsMin = parseInt(document.getElementById('levels-min').value) || null;
         const levelsMax = parseInt(document.getElementById('levels-max').value) || null;
-        const climateFilter = document.getElementById('climate-filter').value;
-        const analysisFilter = document.getElementById('analysis-filter').value;
+        const climateFilter = document.getElementById('climate-filter')?.value || '';
+        const analysisFilter = document.getElementById('analysis-filter')?.value || '';
 
         // Switch dataset if analysis type is selected
         if (analysisFilter && analysisFilter !== this.currentDataset) {
@@ -662,8 +696,14 @@ class DatasetExplorer {
         document.getElementById('apartment-max').value = '';
         document.getElementById('levels-min').value = '';
         document.getElementById('levels-max').value = '';
-        document.getElementById('climate-filter').value = '';
-        document.getElementById('analysis-filter').value = '';
+        const climateFilterEl = document.getElementById('climate-filter');
+        const analysisFilterEl = document.getElementById('analysis-filter');
+        
+        if (climateFilterEl) climateFilterEl.value = '';
+        if (analysisFilterEl) analysisFilterEl.value = '';
+        
+        if (climateFilterEl) climateFilterEl.value = '';
+        if (analysisFilterEl) analysisFilterEl.value = '';
         
         this.currentDataset = 'building';
         this.filteredData = [...this.datasets[this.currentDataset].data];
@@ -695,7 +735,7 @@ class DatasetExplorer {
         const apartmentMax = parseInt(document.getElementById('apartment-max').value) || null;
         const levelsMin = parseInt(document.getElementById('levels-min').value) || null;
         const levelsMax = parseInt(document.getElementById('levels-max').value) || null;
-        const climateFilter = document.getElementById('climate-filter').value;
+        const climateFilter = document.getElementById('climate-filter')?.value || '';
 
         if (!apartmentMin && !apartmentMax && !levelsMin && !levelsMax && !climateFilter) {
             alert('Please apply apartment count, levels count, or climate filters to export synchronized data');
@@ -817,11 +857,46 @@ class DatasetExplorer {
                     container.innerHTML = '<p style="color: #666; font-style: italic;">No columns available</p>';
                     return;
                 }
+
+                // Special debugging for rooms dataset
+                if (datasetKey === 'rooms') {
+                    console.log(`ROOMS DATASET DEBUG: Found ${dataset.columns.length} columns`);
+                    console.log('ROOMS COLUMNS:', dataset.columns);
+                    console.log('ROOMS CONTAINER:', container);
+                }
                 
                 container.innerHTML = '';
                 console.log(`Adding ${dataset.columns.length} columns for ${datasetKey}`);
                 
-                dataset.columns.forEach((column, index) => {
+                // Filter out unwanted columns based on dataset
+                const columnsToExclude = {
+                    building: ['epw', 'address'], // Remove these, add climate separately
+                    rooms: ['simulation_id', 'building_id', 'space_unitID', 'simulation id', 'building id', 'space unitID'],
+                    windows: ['simulation_id', 'building_id', 'window_unitid', 'window_id', 'simulation id', 'building id', 'window unitid', 'window id']
+                };
+                
+                const excludeList = columnsToExclude[datasetKey] || [];
+                let filteredColumns = dataset.columns.filter(column => {
+                    const columnLower = column.toLowerCase().trim();
+                    return !excludeList.some(exclude => {
+                        const excludeLower = exclude.toLowerCase().trim();
+                        return columnLower === excludeLower || 
+                               columnLower.includes(excludeLower) || 
+                               excludeLower.includes(columnLower) ||
+                               columnLower.replace(/[_\s]/g, '') === excludeLower.replace(/[_\s]/g, '');
+                    });
+                });
+                
+                // Debug logging for rooms dataset
+                if (datasetKey === 'rooms') {
+                    console.log('ROOMS - Original columns:', dataset.columns);
+                    console.log('ROOMS - Exclude list:', excludeList);
+                    console.log('ROOMS - Filtered columns:', filteredColumns);
+                }
+                
+                console.log(`Filtered columns for ${datasetKey}:`, filteredColumns);
+                
+                filteredColumns.forEach((column, index) => {
                     try {
                         const checkbox = document.createElement('div');
                         checkbox.className = 'column-checkbox';
@@ -841,6 +916,12 @@ class DatasetExplorer {
                         input.addEventListener('change', (event) => {
                             console.log(`Checkbox changed for ${datasetKey}.${column}, checked: ${event.target.checked}`);
                             console.log('window.datasetExplorer available:', !!window.datasetExplorer);
+                            
+                            // Special debugging for rooms dataset
+                            if (datasetKey === 'rooms') {
+                                console.log(`ROOMS DATASET: Processing column "${column}"`);
+                                console.log(`ROOMS DATASET: Safe ID will be "${checkboxId}"`);
+                            }
                             
                             if (window.datasetExplorer) {
                                 console.log(`Calling toggleColumnFilter("${datasetKey}", "${column}")`);
@@ -917,21 +998,10 @@ class DatasetExplorer {
         }
     }
 
-    toggleColumnFilter(dataset, column) {
-        const checkbox = document.getElementById(`col-${dataset}-${column}`);
-        const filterId = `${dataset}.${column}`;
-        
-        if (checkbox && checkbox.checked) {
-            console.log(`Adding filter for ${filterId}`);
-            this.addFilterControl(filterId, column, dataset);
-        } else {
-            console.log(`Removing filter for ${filterId}`);
-            this.removeFilterControl(filterId);
-        }
-    }
-
     addFilterControl(filterId, column, dataset) {
         console.log(`Adding filter control for ${filterId}`);
+        console.log(`Current active filters count: ${this.activeFilters.size}`);
+        
         const domain = this.columnDomains.get(filterId);
         if (!domain) {
             console.error(`No domain found for ${filterId}`);
@@ -953,7 +1023,17 @@ class DatasetExplorer {
         // Check if filter already exists
         const existingFilter = activeFiltersContainer.querySelector(`[data-filter-id="${filterId}"]`);
         if (existingFilter) {
-            console.log(`Filter ${filterId} already exists`);
+            console.log(`Filter ${filterId} already exists - not adding duplicate`);
+            return;
+        }
+
+        // Check current filter count
+        const currentFilterCount = activeFiltersContainer.querySelectorAll('.filter-item').length;
+        console.log(`Current filter items in container: ${currentFilterCount}`);
+        
+        if (currentFilterCount >= 10) {
+            console.warn('Maximum of 10 filters allowed for performance reasons');
+            alert('Maximum of 10 filters allowed. Please remove some filters before adding new ones.');
             return;
         }
 
@@ -1053,6 +1133,42 @@ class DatasetExplorer {
 
     applyAdvancedFilters() {
         console.log('=== Applying Advanced Filters ===');
+        
+        // Show loading state
+        this.showFilteringLoading(true);
+        
+        // Use setTimeout to allow UI update before processing
+        setTimeout(() => {
+            try {
+                this.processAdvancedFilters();
+            } finally {
+                // Hide loading state
+                this.showFilteringLoading(false);
+            }
+        }, 10);
+    }
+    
+    showFilteringLoading(show) {
+        const button = document.getElementById('apply-filters-btn');
+        const textSpan = button?.querySelector('.btn-text');
+        const loadingSpan = button?.querySelector('.btn-loading');
+        
+        if (button && textSpan && loadingSpan) {
+            if (show) {
+                textSpan.style.display = 'none';
+                loadingSpan.style.display = 'inline';
+                button.disabled = true;
+                button.style.opacity = '0.7';
+            } else {
+                textSpan.style.display = 'inline';
+                loadingSpan.style.display = 'none';
+                button.disabled = false;
+                button.style.opacity = '1';
+            }
+        }
+    }
+    
+    processAdvancedFilters() {
         this.activeFilters.clear();
         
         // Collect all active filters
@@ -1483,12 +1599,17 @@ window.clearAllFilters = function() {
     }
 };
 
-// Close dropdown when clicking outside
+// Close dropdown when clicking outside (with delay to prevent immediate closing)
 document.addEventListener('click', function(event) {
     const dropdown = document.getElementById('column-dropdown');
     const toggle = document.getElementById('column-selector-toggle');
     
-    if (dropdown && toggle && !toggle.contains(event.target) && !dropdown.contains(event.target)) {
+    // Only close if dropdown is open and click is outside
+    if (dropdown && toggle && 
+        dropdown.style.display === 'block' &&
+        !toggle.contains(event.target) && 
+        !dropdown.contains(event.target)) {
+        
         dropdown.style.display = 'none';
         toggle.classList.remove('active');
     }

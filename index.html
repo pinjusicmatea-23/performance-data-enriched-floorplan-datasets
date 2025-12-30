@@ -21,7 +21,6 @@
             <nav class="nav" id="nav">
                 <ul class="nav-list">
                     <li><a href="#home" class="nav-link">Home</a></li>
-                    <li><a href="pages/blog.html" class="nav-link">Blog</a></li>
                     <li><a href="pages/sources.html" class="nav-link">Sources</a></li>
                     <li><a href="pages/data-usage.html" class="nav-link">Data Usage</a></li>
                     <li><a href="#graphs" class="nav-link">Visualizations</a></li>
@@ -60,8 +59,8 @@
                 
                 <!-- Full-width Workflow Image -->
                 <div class="workflow-image-fullwidth">
-                    <img src="images/workflow.png" alt="Project Workflow Diagram" class="workflow-diagram-fullwidth" id="workflow-image" onclick="openWorkflowPDF()" title="Click to view detailed documentation (Page 14)" loading="lazy">
-                    <p class="image-caption">Comprehensive workflow for performance data enriched floorplan datasets (Click image to view detailed documentation)</p>
+                    <img src="images/workflow.png" alt="Project Workflow Diagram" class="workflow-diagram-fullwidth" id="workflow-image" loading="lazy">
+                    <p class="image-caption">Comprehensive workflow for performance data enriched floorplan datasets</p>
                 </div>
                 
                 <!-- Project Highlights Cards -->
@@ -89,7 +88,7 @@
         <!-- GLB Models Grid Section -->
         <section id="ifc-models" class="ifc-section">
             <div class="container">
-                <h2>3D GLB Models Grid (3x2)</h2>
+                <h2>Models preview</h2>
                 
                 <!-- GLB Grid Viewer Container -->
                 <div class="ifc-viewer-container">
@@ -125,12 +124,6 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="graph-controls">
-                        <button class="btn" onclick="loadGraph('1006_adjacency.html')">Load Building 1006</button>
-                        <button class="btn" onclick="loadRandomGraph()">Random Graph</button>
-                        <button class="btn secondary" onclick="resetView()">Reset View</button>
-                        <button class="btn secondary" onclick="graphManager.showGraphList()">Browse All</button>
-                    </div>
                 </div>
             </div>
         </section>
@@ -139,12 +132,11 @@
         <section id="data-preview" class="data-section">
             <div class="container">
                 <h2>Dataset Explorer</h2>
-                <p>Interactive preview and filtering of architectural performance data. Use SQL-like queries and filters to explore the dataset.</p>
+                <p>Interactive preview and filtering of architectural performance data.</p>
                 
                 <div class="data-container">
                     <!-- Query Interface -->
                     <div class="query-panel">
-                        <h3>Data Query & Filters</h3>
                         <div class="query-controls">
                             <div class="advanced-filter-container-fullwidth">
                                 <div class="filter-selector">
@@ -171,26 +163,11 @@
                                     <div class="filter-instructions">Select columns above to add filters</div>
                                 </div>
                                 <div class="filter-actions">
-                                    <button class="btn" onclick="applyAdvancedFilters()">Apply Filters</button>
+                                    <button class="btn secondary" id="apply-filters-btn" onclick="applyAdvancedFilters()">
+                                        <span class="btn-text">Apply Filters</span>
+                                        <span class="btn-loading" style="display: none;">Filtering...</span>
+                                    </button>
                                     <button class="btn secondary" onclick="clearAllFilters()">Clear All</button>
-                                </div>
-                            </div>
-                            
-                            <div class="filter-row" style="margin-top: 1rem;">
-                                <div class="filter-group">
-                                    <label>Climate Zone:</label>
-                                    <select id="climate-filter" onchange="applyFilters()">
-                                        <option value="">All Climates</option>
-                                    </select>
-                                </div>
-                                <div class="filter-group">
-                                    <label>Analysis Type:</label>
-                                    <select id="analysis-filter" onchange="applyFilters()">
-                                        <option value="">All Types</option>
-                                        <option value="building">Building Info</option>
-                                        <option value="windows">Windows Simulation</option>
-                                        <option value="rooms">Rooms Simulation</option>
-                                    </select>
                                 </div>
                             </div>
                             </div>
@@ -210,23 +187,6 @@
                         
                         <div class="table-container" id="data-table-container">
                             <p>Dataset will load here...</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Quick Examples -->
-                    <div class="query-examples">
-                        <h4>Quick Query Examples:</h4>
-                        <div class="example-buttons">
-                            <button class="btn example-btn" onclick="loadExampleQuery('building')">Buildings > 10 Apt</button>
-                            <button class="btn example-btn" onclick="loadExampleQuery('energy')">High Sun Hours</button>
-                            <button class="btn example-btn" onclick="loadExampleQuery('daylight')">High Daylight</button>
-                            <button class="btn example-btn" onclick="loadExampleQuery('climate')">Bangkok Climate</button>
-                            <button class="btn example-btn" onclick="loadExampleQuery('rooms_kitchen')">Kitchen Spaces</button>
-                            <button class="btn example-btn" onclick="loadExampleQuery('rooms_living')">Living Rooms</button>
-                        </div>
-                        <div class="query-help">
-                            <p><strong>Cross-Dataset Queries:</strong> Use <code>FROM rooms WHERE space_name = 'KITCHEN'</code> or <code>FROM windows WHERE Sun Hours_summer > 5</code></p>
-                            <p><strong>Column Aliases:</strong> Use <code>space_name</code>, <code>space_type</code>, <code>daylight_factor</code>, <code>building_id</code></p>
                         </div>
                     </div>
                 </div>
@@ -284,13 +244,13 @@
                         <div class="step-number">01</div>
                         <div class="step-content">
                             <h3>Foundation Dataset: Swiss Dwellings</h3>
-                            <p>We began with the comprehensive Swiss residential building dataset from ETH Zurich, which provides authentic architectural geometries and spatial configurations from real-world buildings.</p>
+                            <p>A large dataset of apartment models including aggregated geolocation-based simulation results covering viewshed, natural light, traffic noise, centrality and geometric analysis.</p>
                             <div class="step-details">
                                 <ul>
                                     <li>3,000+ residential building units</li>
                                     <li>Detailed room-level spatial data</li>
                                     <li>Authentic Swiss architectural typologies</li>
-                                    <li>Geographic and contextual metadata</li>
+                                    <li>Custom python node for CSV to geometry</li>
                                 </ul>
                                 <a href="https://zenodo.org/records/7788422" class="btn btn-secondary" target="_blank" rel="noopener">View Original Dataset →</a>
                             </div>
@@ -299,6 +259,38 @@
                     
                     <div class="process-step">
                         <div class="step-number">02</div>
+                        <div class="step-content">
+                            <h3>3D Model</h3>
+                            <p>IFC models created with precision and enhanced properties for comprehensive building information modeling.</p>
+                            <div class="step-details">
+                                <ul>
+                                    <li>IFC models with Geometry Gym</li>
+                                    <li>Adding properties to IFC</li>
+                                    <li>Precise geometry</li>
+                                </ul>
+                                <a href="https://geometrygym.wordpress.com/" class="btn btn-secondary" target="_blank" rel="noopener">Visit Geometry Gym →</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="step-number">03</div>
+                        <div class="step-content">
+                            <h3>Real World Context</h3>
+                            <p>Integration with real-world environmental data to provide comprehensive contextual information for each building.</p>
+                            <div class="step-details">
+                                <ul>
+                                    <li>CityWeft API integration</li>
+                                    <li>10 climates/cities coverage</li>
+                                    <li>Matching building characteristics with city</li>
+                                </ul>
+                                <a href="https://www.cityweft.com/" class="btn btn-secondary" target="_blank" rel="noopener">Visit CityWeft →</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="process-step">
+                        <div class="step-number">04</div>
                         <div class="step-content">
                             <h3>Performance Simulation</h3>
                             <p>Each building geometry underwent comprehensive environmental performance analysis using industry-standard simulation tools.</p>
@@ -309,12 +301,13 @@
                                     <li>Solar radiation and sun hour modeling</li>
                                     <li>Window performance optimization studies</li>
                                 </ul>
+                                <a href="https://www.pollination.solutions/rhino-plugin" class="btn btn-secondary" target="_blank" rel="noopener">Visit Pollination →</a>
                             </div>
                         </div>
                     </div>
                     
                     <div class="process-step">
-                        <div class="step-number">03</div>
+                        <div class="step-number">05</div>
                         <div class="step-content">
                             <h3>Data Enhancement & Integration</h3>
                             <p>Raw simulation outputs were processed, validated, and integrated with spatial data to create our enriched architectural dataset.</p>

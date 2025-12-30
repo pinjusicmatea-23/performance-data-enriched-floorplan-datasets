@@ -38,16 +38,17 @@ class PerformanceOptimizer {
     }
 
     garbageCollect() {
-        // Remove unused iframe elements
-        const unusedIframes = document.querySelectorAll('iframe:not(.active)');
-        unusedIframes.forEach(iframe => {
-            if (iframe.parentNode && !iframe.classList.contains('keep-alive')) {
+        // Disabled iframe removal to prevent graphs from disappearing
+        // Only remove iframes explicitly marked for removal
+        const explicitRemovalTargets = document.querySelectorAll('iframe.remove-me');
+        explicitRemovalTargets.forEach(iframe => {
+            if (iframe.parentNode) {
                 iframe.remove();
             }
         });
 
-        // Clear console
-        if (console.clear && this.memoryUsage > 150) {
+        // Clear console less frequently
+        if (console.clear && this.memoryUsage > 500) {
             console.clear();
         }
     }

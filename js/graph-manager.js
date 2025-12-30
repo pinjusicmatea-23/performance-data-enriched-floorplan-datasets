@@ -77,11 +77,6 @@ class GraphManager {
         // Add graph selection and filtering controls
         const controlsHTML = `
             <div class="graph-selection-controls">
-                <div class="graph-categories">
-                    <button class="category-btn active" onclick="filterGraphs('all')">All Graphs (${this.graphs.length})</button>
-                    <button class="category-btn" onclick="filterGraphs('adjacency')">Adjacency (${this.getGraphsByType('adjacency').length})</button>
-                    <button class="category-btn" onclick="filterGraphs('sample')">Samples (${this.getGraphsByType('sample').length})</button>
-                </div>
                 <div class="graph-search">
                     <input type="text" id="graph-search" placeholder="Search graphs by building number..." 
                            onkeyup="graphManager.searchGraphs(this.value)">
@@ -99,17 +94,11 @@ class GraphManager {
     }
 
     updateGraphSection() {
-        // Update the graph controls with our available graphs
-        const graphControls = document.querySelector('.graph-controls');
-        if (graphControls) {
-            graphControls.innerHTML = `
-                <button class="btn" onclick="loadGraph('${this.graphs[0].filename}')">Load ${this.graphs[0].title}</button>
-                <button class="btn" onclick="loadRandomGraph()">Random Graph</button>
-                <button class="btn secondary" onclick="resetView()">Reset View</button>
-                <button class="btn secondary" onclick="graphManager.showGraphInfo()">Graph Info</button>
-                <button class="btn secondary" onclick="graphManager.toggleFullscreen()">Fullscreen</button>
-            `;
-        }
+        // Disabled to remove empty frames and controls
+        // const graphControls = document.querySelector('.graph-controls');
+        // if (graphControls) {
+        //     graphControls.innerHTML = ``;
+        // }
     }
 
     getGraphsByType(type) {
@@ -177,13 +166,8 @@ class GraphManager {
                     </div>
                     <div class="graph-list-grid">
                         ${displayGraphs.map(graph => `
-                            <div class="graph-list-item" onclick="loadGraph('${graph.filename}'); this.closest('.graph-list-modal').remove();">
-                                <div class="graph-list-icon">${graph.icon}</div>
-                                <div class="graph-list-info">
-                                    <div class="graph-list-title">${graph.title}</div>
-                                    <div class="graph-list-desc">${graph.description}</div>
-                                    <div class="graph-list-file">📁 ${graph.filename}</div>
-                                </div>
+                            <div class="graph-list-item" onclick="console.log('Clicking graph:', '${graph.filename}'); loadGraph('${graph.filename}'); this.closest('.graph-list-modal').remove();">
+                                ${graph.title}
                             </div>
                         `).join('')}
                     </div>
@@ -301,28 +285,18 @@ class EnhancedGraphViewer extends GraphViewer {
             const graph = this.graphManager.getGraphByFilename(graphName);
             if (graph) {
                 // this.graphManager.showNotification(`Loading: ${graph.title}`, 'info'); // Disabled popup notification
-                this.updateGraphMetadata(graph);
+                // this.updateGraphMetadata(graph); // Disabled metadata display
             }
             originalLoadGraph(graphName);
         };
     }
 
     updateGraphMetadata(graph) {
-        let metadata = document.querySelector('.graph-metadata');
-        if (!metadata) {
-            metadata = document.createElement('div');
-            metadata.className = 'graph-metadata';
-            const container = document.querySelector('.graph-container');
-            container?.appendChild(metadata);
+        // Disabled - remove any existing metadata
+        const metadata = document.querySelector('.graph-metadata');
+        if (metadata) {
+            metadata.remove();
         }
-
-        metadata.innerHTML = `
-            <h3>Currently Viewing: ${graph.title}</h3>
-            <p><strong>Type:</strong> ${graph.type.charAt(0).toUpperCase() + graph.type.slice(1)} Graph</p>
-            <p><strong>Description:</strong> ${graph.description}</p>
-            <p><strong>Interactions:</strong> Click and drag to pan, scroll to zoom, right-click and drag to rotate</p>
-            <p><strong>File:</strong> /graphs/${graph.filename}</p>
-        `;
     }
 }
 

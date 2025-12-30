@@ -10,6 +10,7 @@
     height: 25px;
     position: relative;
     z-index: 1001;
+    font-family: inherit; /* Ensure hamburger inherits font */
 }
 
 .hamburger-line {
@@ -79,7 +80,8 @@
 }
 
 .nav-link:hover {
-    color: #007bff;
+    color: #002FA7;
+    text-decoration: none;
 }
 
 /* Mobile menu styles */
