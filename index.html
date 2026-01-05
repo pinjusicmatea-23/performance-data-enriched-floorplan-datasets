@@ -10,13 +10,51 @@
     <link rel="stylesheet" href="css/ifc-viewer.css">
     <!-- Three.js CDN for 3D rendering -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r157/three.min.js"></script>
+    
+    <!-- Simple Scroll Animations -->
+    <style>
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            will-change: opacity, transform;
+        }
+        
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+            will-change: auto;
+        }
+        
+        .scroll-animate-delay {
+            transition-delay: 0.15s;
+        }
+        
+        .scroll-animate-delay-2 {
+            transition-delay: 0.3s;
+        }
+        
+        .scroll-animate-delay-3 {
+            transition-delay: 0.45s;
+        }
+        
+        /* Reduce animations on slow devices */
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-animate {
+                transition: none;
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header with hamburger menu -->
     <header class="header">
         <div class="container">
-            <div class="logo">
-                <h1>Architectural Dataset</h1>
+            <div class="logo" style="display: flex; align-items: center;">
+                <img src="images/logo3.jpg" alt="Archiset Logo" loading="eager" style="height: 40px; margin-right: 10px;">
+                <h1>Archiset</h1>
             </div>
             <nav class="nav" id="nav">
                 <ul class="nav-list">
@@ -38,15 +76,25 @@
 
     <!-- Main content -->
     <main>
-        <!-- Hero section -->
+        <!-- Full-screen Hero section with video background -->
         <section id="home" class="hero">
-            <div class="container">
-                <h2>Explore Architectural Data</h2>
-                <p>Discover and analyze comprehensive architectural datasets with interactive visualizations and downloadable resources.</p>
-                <div class="hero-buttons">
-                    <a href="#graphs" class="btn btn-primary">View Visualizations</a>
-                    <a href="#ifc-models" class="btn btn-primary">Explore 3D Models</a>
-                    <a href="#download" class="btn btn-secondary">Download Dataset</a>
+            <!-- Background video -->
+            <video autoplay muted loop playsinline preload="metadata" class="hero-video">
+                <source src="images/home_frame.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            
+            <!-- Hero content overlay -->
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div class="container">
+                    <h1>Explore Architectural Data</h1>
+                    <p>Discover and analyze comprehensive architectural datasets with interactive visualizations and downloadable resources.</p>
+                    <div class="hero-buttons">
+                        <a href="#graphs" class="btn btn-primary">View Visualizations</a>
+                        <a href="#ifc-models" class="btn btn-primary">Explore 3D Models</a>
+                        <a href="#download" class="btn btn-secondary">Download Dataset</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -54,32 +102,32 @@
         <!-- Project Information Section -->
         <section id="project-info" class="project-info-section">
             <div class="container">
-                <h2>Project Workflow</h2>
-                <p class="workflow-intro">This research project presents a comprehensive methodology for enriching architectural datasets with performance data. Our workflow integrates IFC building models with energy and daylight analysis to create enhanced datasets for machine learning and architectural research.</p>
+                <h2 class="scroll-animate">Project Workflow</h2>
+                <p class="workflow-intro scroll-animate">This research project presents a comprehensive methodology for enriching architectural datasets with performance data. Our workflow integrates IFC building models with energy and daylight analysis to create enhanced datasets for machine learning and architectural research in multiple formats.</p>
                 
                 <!-- Full-width Workflow Image -->
-                <div class="workflow-image-fullwidth">
+                <div class="workflow-image-fullwidth scroll-animate">
                     <img src="images/workflow.png" alt="Project Workflow Diagram" class="workflow-diagram-fullwidth" id="workflow-image" loading="lazy">
                     <p class="image-caption">Comprehensive workflow for performance data enriched floorplan datasets</p>
                 </div>
                 
                 <!-- Project Highlights Cards -->
                 <div class="project-highlights">
-                    <div class="highlight-item">
-                        <h3>IFC Model Processing</h3>
-                        <p>Automated extraction and processing of building geometry from Industry Foundation Classes (IFC) files</p>
+                    <div class="highlight-item scroll-animate">
+                        <h3>IFC Authoring</h3>
+                        <p>Using the Geometry Gym plugin, GH trees are mapped to the correct IFC hierarchy (Project → Site → Building → Storey → Elements), ensuring semantic validity and robust relationships for downstream queries.</p>
                     </div>
-                    <div class="highlight-item">
-                        <h3>Performance Analysis</h3>
-                        <p>Energy simulation and daylight analysis integration across multiple climate zones</p>
+                    <div class="highlight-item scroll-animate scroll-animate-delay">
+                        <h3>Geolocation & Climate Context</h3>
+                        <p>Using the CityWeft API, models are placed in real-world contexts. 10 climate zones are defined and candidate locations pre-selected. A positioning script matches each building to an optimal site based on typology, window distribution, and height.</p>
                     </div>
-                    <div class="highlight-item">
-                        <h3>Data Enrichment</h3>
-                        <p>Systematic enhancement of architectural datasets with quantified performance metrics</p>
+                    <div class="highlight-item scroll-animate scroll-animate-delay-2">
+                        <h3>Performance Simulations</h3>
+                        <p>Solar radiation, daylight, and energy studies are conducted. Results are stored at the appropriate granularity (room, window, apartment).</p>
                     </div>
-                    <div class="highlight-item">
-                        <h3>Research Applications</h3>
-                        <p>Machine learning ready datasets for architectural performance prediction and optimization</p>
+                    <div class="highlight-item scroll-animate scroll-animate-delay-3">
+                        <h3>Data Embedding & Structuring</h3>
+                        <p>Simulation outputs are written back into IFC as custom properties and exported in structured CSV/XML to support analytics and ML pipelines. Rich building graphs are also generated from these enriched IFCs.</p>
                     </div>
                 </div>
             </div>
@@ -96,6 +144,7 @@
                         id="ifc-viewer-frame" 
                         class="ifc-viewer-frame" 
                         src="viewers/grid-glb-viewer.html"
+                        loading="lazy"
                         title="GLB Models Grid Viewer - IAAC Performance Dataset">
                     </iframe>
                 </div>
@@ -108,7 +157,7 @@
         <section id="graphs" class="graphs-section">
             <div class="container">
                 <h2>Interactive Visualizations</h2>
-                <p>Explore architectural adjacency graphs showing spatial relationships within buildings. Pan, zoom, and interact with 37+ graph visualizations.</p>
+                <p>Explore architectural adjacency graphs showing spatial relationships within buildings. Pan, zoom, and interact with graph visualizations.</p>
                 <div class="graph-container">
                     <div class="graph-viewer" id="graph-viewer">
                         <div class="graph-placeholder">
@@ -132,7 +181,7 @@
         <section id="data-preview" class="data-section">
             <div class="container">
                 <h2>Dataset Explorer</h2>
-                <p>Interactive preview and filtering of architectural performance data.</p>
+                <p>Interactive preview and filtering of architectural data. Choose your ranges.</p>
                 
                 <div class="data-container">
                     <!-- Query Interface -->
@@ -197,12 +246,12 @@
         <section id="download" class="download-section">
             <div class="container">
                 <h2>Download Dataset</h2>
-                <p>Access our comprehensive architectural dataset for research and analysis.</p>
+                <p>Access comprehensive architectural dataset for research and analysis.</p>
                 <div class="download-grid">
                     <div class="download-item">
                         <h3>Full Dataset</h3>
                         <p>Complete architectural dataset with all measurements and metadata.</p>
-                        <a href="datasets/full-dataset.zip" class="btn btn-download" download>Download ZIP</a>
+                        <button class="btn btn-download" onclick="downloadFullDataset()">Download All</button>
                     </div>
                     <div class="download-item">
                         <h3>CSV Dataset</h3>
@@ -236,15 +285,15 @@
         <!-- Workflow Process Section -->
         <section id="workflow-process" class="workflow-process-section">
             <div class="container">
-                <h2>Dataset Creation Process</h2>
-                <p>Our dataset enhancement workflow consists of multiple stages, each building upon established architectural databases and simulation methodologies.</p>
+                <h2 class="scroll-animate">Dataset Creation Process</h2>
+                <p class="scroll-animate">Dataset enhancement workflow consists of multiple stages, each building upon established architectural processes and simulation methodologies.</p>
                 
                 <div class="process-steps">
-                    <div class="process-step">
+                    <div class="process-step scroll-animate">
                         <div class="step-number">01</div>
                         <div class="step-content">
                             <h3>Foundation Dataset: Swiss Dwellings</h3>
-                            <p>A large dataset of apartment models including aggregated geolocation-based simulation results covering viewshed, natural light, traffic noise, centrality and geometric analysis.</p>
+                            <p>A large dataset of real apartment models saved in csv which can be recreated as geometry using Python.</p>
                             <div class="step-details">
                                 <ul>
                                     <li>3,000+ residential building units</li>
@@ -257,7 +306,7 @@
                         </div>
                     </div>
                     
-                    <div class="process-step">
+                    <div class="process-step scroll-animate scroll-animate-delay">
                         <div class="step-number">02</div>
                         <div class="step-content">
                             <h3>3D Model</h3>
@@ -273,7 +322,7 @@
                         </div>
                     </div>
                     
-                    <div class="process-step">
+                    <div class="process-step scroll-animate scroll-animate-delay-2">
                         <div class="step-number">03</div>
                         <div class="step-content">
                             <h3>Real World Context</h3>
@@ -289,7 +338,7 @@
                         </div>
                     </div>
                     
-                    <div class="process-step">
+                    <div class="process-step scroll-animate scroll-animate-delay-3">
                         <div class="step-number">04</div>
                         <div class="step-content">
                             <h3>Performance Simulation</h3>
@@ -306,7 +355,7 @@
                         </div>
                     </div>
                     
-                    <div class="process-step">
+                    <div class="process-step scroll-animate">
                         <div class="step-number">05</div>
                         <div class="step-content">
                             <h3>Data Enhancement & Integration</h3>
@@ -352,5 +401,72 @@
     <script src="js/graph-viewer.js"></script>
     <script src="js/enhanced-graph-loader.js"></script>
     <script src="js/graph-manager.js"></script>
+    
+    <!-- Simple Scroll Animation Script -->
+    <script>
+        // Throttle function to limit observer callbacks
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            }
+        }
+        
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -30px 0px'
+        };
+        
+        const observer = new IntersectionObserver(throttle((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Stop observing once animated to improve performance
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, 100), observerOptions);
+        
+        // Observe all elements with scroll-animate class
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for reduced motion preference
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                return; // Skip animations for users who prefer reduced motion
+            }
+            
+            const animateElements = document.querySelectorAll('.scroll-animate');
+            animateElements.forEach(el => observer.observe(el));
+        });
+        
+        // Function to download all dataset files
+        function downloadFullDataset() {
+            const files = [
+                'datasets/csv-dataset.zip',
+                'datasets/documentation.pdf',
+                'datasets/swiss-dwellings-v3.0.0.zip',
+                'datasets/ifc.zip',
+                'datasets/graphs.zip'
+            ];
+            
+            // Download each file with a small delay to prevent browser blocking
+            files.forEach((file, index) => {
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = file;
+                    link.download = '';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }, index * 500); // 500ms delay between downloads
+            });
+        }
+    </script>
 </body>
 </html>

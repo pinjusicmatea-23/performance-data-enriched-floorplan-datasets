@@ -1044,7 +1044,10 @@ class DatasetExplorer {
         if (domain.type === 'numeric') {
             console.log(`Creating numeric filter for ${column}, range: ${domain.min} - ${domain.max}`);
             filterItem.innerHTML = `
-                <div class="filter-label">${column}<br><small>(${dataset})</small></div>
+                <div class="filter-label">
+                    ${column}<br>
+                    <small>(${dataset})</small>
+                </div>
                 <div class="filter-input-group">
                     <select class="filter-operator" id="op-${filterId.replace(/[^a-zA-Z0-9]/g, '_')}">
                         <option value="=">=</option>
@@ -1058,6 +1061,7 @@ class DatasetExplorer {
                            placeholder="Value" min="${domain.min || ''}" max="${domain.max || ''}" step="0.1">
                     <input type="number" class="filter-input" id="val2-${filterId.replace(/[^a-zA-Z0-9]/g, '_')}" 
                            placeholder="Max" min="${domain.min || ''}" max="${domain.max || ''}" step="0.1" style="display:none;">
+                    <div class="range-indicator">${domain.min} - ${domain.max}</div>
                 </div>
                 <button type="button" class="remove-filter" onclick="window.datasetExplorer.removeFilterControl('${filterId}')">×</button>
             `;

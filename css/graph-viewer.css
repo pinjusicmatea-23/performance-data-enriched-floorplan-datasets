@@ -1,6 +1,6 @@
 /* Graph Viewer Styles */
 .graphs-section {
-    padding: 4rem 0;
+    padding: 2rem 0 4rem;
     background: var(--white);
 }
 
@@ -17,7 +17,7 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
     display: flex;
     flex-direction: column;
 }
@@ -52,7 +52,7 @@
     background-color: #fff;
     padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
     margin-bottom: 1rem;
 }
 
@@ -98,7 +98,7 @@
 .graph-search input:focus {
     outline: none;
     border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+
 }
 
 .graph-quick-actions {
@@ -129,7 +129,7 @@
     max-width: 800px;
     max-height: 80vh;
     overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
 }
 
 .graph-list-header {
@@ -189,7 +189,7 @@
     border-color: #007bff;
     background-color: #f8f9fa;
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
 }
 
 .graph-list-icon {
@@ -249,7 +249,7 @@
     padding: 1rem;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
 }
 
 .graph-controls .btn {
@@ -395,7 +395,7 @@
 
 .error-actions .btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
 }
 
 /* Graph metadata */
@@ -404,7 +404,7 @@
     padding: 1rem;
     border-radius: 8px;
     margin-top: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
 }
 
 .graph-metadata h3 {
