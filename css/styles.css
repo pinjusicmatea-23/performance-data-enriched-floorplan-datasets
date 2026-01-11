@@ -2275,3 +2275,482 @@ a:focus {
     position: relative;
     z-index: 1;
 }
+
+/* About Page Styles */
+.about-section {
+    padding: 4rem 0;
+    background: var(--white);
+}
+
+.about-section h1 {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--dark-color);
+    font-size: 2.5rem;
+}
+
+.thesis-explanation {
+    background: var(--light-color);
+    padding: 2.5rem;
+    border-radius: var(--border-radius-lg);
+    margin-bottom: 3rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.thesis-explanation h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.thesis-explanation h3 {
+    color: var(--dark-color);
+    margin: 2rem 0 1rem 0;
+    font-size: 1.3rem;
+}
+
+.thesis-explanation p {
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+    color: var(--gray-700);
+}
+
+.thesis-explanation ul {
+    margin: 1rem 0 1.5rem 0;
+    padding-left: 2rem;
+}
+
+.thesis-explanation ul li {
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+    color: var(--gray-700);
+}
+
+.thesis-explanation ul li strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.credits-section {
+    margin-bottom: 3rem;
+}
+
+.credits-section h2 {
+    color: var(--dark-color);
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.credit-item h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+.credit-item p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--gray-700);
+}
+
+.credit-item ul {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+.credit-item ul li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+    color: var(--gray-700);
+}
+
+.credit-item strong {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+.credit-item em {
+    font-style: italic;
+    color: var(--secondary-color);
+}
+
+.credit-item a {
+    color: var(--primary-color);
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.credit-item a:hover {
+    color: var(--dark-color);
+}
+
+.contact-section {
+    background: var(--light-color);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--success-color);
+}
+
+.contact-section h2 {
+    color: var(--success-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
+}
+
+.contact-section p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--gray-700);
+}
+
+.contact-section strong {
+    color: var(--dark-color);
+    font-weight: 600;
+}
+
+/* Sources section within About page */
+.sources-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--gray-200);
+}
+
+.sources-section h2 {
+    color: var(--dark-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.sources-section > p {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+.sources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.sources-list .source-item {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.sources-list .source-item:hover {
+    transform: translateY(-2px);
+}
+
+.sources-list .source-item h3 {
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.source-author {
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.source-publication {
+    font-style: italic;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.source-description {
+    color: var(--gray-700);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.source-link {
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.source-link:hover {
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+}
+
+/* Contact Page Styles */
+.contact-page-section {
+    padding: 4rem 0;
+    background: var(--white);
+}
+
+.contact-page-section h1 {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--dark-color);
+    font-size: 2.5rem;
+}
+
+.contact-info-section {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.contact-intro {
+    text-align: center;
+    margin-bottom: 3rem;
+    background: var(--light-color);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+}
+
+.contact-intro p {
+    font-size: 1.2rem;
+    color: var(--gray-700);
+    margin: 0;
+}
+
+.contact-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.contact-item {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--primary-color);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+    transform: translateY(-2px);
+}
+
+.contact-item h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.contact-item p {
+    color: var(--gray-700);
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.contact-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.contact-item a:hover {
+    text-decoration: underline;
+}
+
+.collaboration-note {
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.collaboration-note:hover {
+    transform: translateY(-2px);
+}
+
+.collaboration-note h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: left;
+    font-size: 1.8rem;
+}
+
+.collaboration-note p {
+    color: var(--gray-700);
+    margin-bottom: 1.5rem;
+    text-align: left;
+    font-size: 1.1rem;
+}
+
+.collaboration-note ul {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-left: 2rem;
+}
+
+.collaboration-note li {
+    margin-bottom: 0.8rem;
+    color: var(--gray-700);
+    line-height: 1.6;
+}
+
+/* License section styling - matching citation section */
+.license-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--gray-200);
+}
+
+.license-section h2 {
+    color: var(--dark-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.license-info {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.license-info:hover {
+    transform: translateY(-2px);
+}
+
+.license-badge {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.license-type {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.license-name {
+    font-weight: 500;
+    color: var(--dark-color);
+    font-size: 0.95rem;
+}
+
+.license-info p {
+    color: var(--gray-700);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.license-info p:last-child {
+    margin-bottom: 0;
+}
+
+/* Citation section styling - matching sources and credits sections */
+.citation-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--gray-200);
+}
+
+.citation-section h2 {
+    color: var(--dark-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.citation-item {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--primary-color);
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.citation-item:hover {
+    transform: translateY(-2px);
+}
+
+.citation-item h3 {
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.citation-item p {
+    color: var(--gray-700);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.citation-item code {
+    background: var(--gray-50);
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 0.9rem;
+    display: block;
+    white-space: pre-wrap;
+    color: var(--gray-800);
+}
+
+/* Credits section styling - matching sources section */
+.credits-section {
+    margin-top: 3rem;
+}
+
+.credits-section h2 {
+    color: var(--dark-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.credit-item {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--primary-color);
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.credit-item:hover {
+    transform: translateY(-2px);
+}
+
+.credit-item h3 {
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.credit-item p {
+    color: var(--gray-700);
+    line-height: 1.5;
+    margin: 0;
+}
