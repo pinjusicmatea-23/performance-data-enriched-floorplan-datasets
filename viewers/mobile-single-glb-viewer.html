@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GLB Model Mobile Viewer - Single Model</title>
+  <style>
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+    }
+    
+    .viewer-container {
+      height: 100vh;
+      width: 100vw;
+      background: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .viewer-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+    
+    .model-label {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    
+    .controls {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 100;
+    }
+    
+    .control-btn {
+      background: rgba(0, 47, 167, 0.9);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      backdrop-filter: blur(10px);
+      min-width: 44px;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    
+    .control-btn:hover,
+    .control-btn:active {
+      background: rgba(0, 38, 160, 0.9);
+      transform: scale(1.05);
+    }
+    
+    .download-btn {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 47, 167, 0.9);
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      backdrop-filter: blur(10px);
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    
+    .download-btn:hover,
+    .download-btn:active {
+      background: rgba(0, 38, 160, 0.9);
+      transform: scale(1.05);
+    }
+    
+    .error-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      text-align: center;
+      font-size: 1rem;
+      max-width: 80%;
+      z-index: 200;
+      backdrop-filter: blur(10px);
+    }
+
+    .loading-message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 47, 167, 0.1);
+      color: #002FA7;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 47, 167, 0.3);
+      text-align: center;
+      font-size: 1rem;
+      z-index: 200;
+      backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+<body>
+  <div class="viewer-container" id="viewer-container">
+    <div class="loading-message" id="loading-message">
+      Loading 3D Model...
+    </div>
+    <div class="model-label" id="model-label" style="display: none;">Building Model</div>
+    
+    <!-- Controls -->
+    <div class="controls" id="controls" style="display: none;">
+      <button class="control-btn" onclick="resetView()" title="Reset View">🔄</button>
+      <button class="control-btn" onclick="toggleWireframe()" title="Toggle Wireframe">📐</button>
+    </div>
+    
+    <!-- Download Button -->
+    <button class="download-btn" onclick="downloadModel()" id="download-btn" style="display: none;">
+      💾 Download Model
+    </button>
+  </div>
+
+  <!-- Three.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r157/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r157/controls/OrbitControls.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r157/loaders/GLTFLoader.js"></script>
+
+  <script>
+    // Mobile Single GLB Viewer
+    class MobileSingleGLBViewer {
+      constructor() {
+        this.scene = null;
+        this.camera = null;
+        this.renderer = null;
+        this.controls = null;
+        this.model = null;
+        this.modelUrl = '../models/glb/sample-building.glb'; // Default to first model
+        this.isWireframe = false;
+        this.originalMaterials = new Map();
+        
+        this.init();
+      }
+      
+      init() {
+        this.setupScene();
+        this.setupCamera();
+        this.setupRenderer();
+        this.setupControls();
+        this.setupLights();
+        this.loadModel();
+        this.animate();
+        
+        // Handle window resize
+        window.addEventListener('resize', () => this.onWindowResize());
+      }
+      
+      setupScene() {
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0xf8fafc);
+        this.scene.fog = new THREE.Fog(0xf8fafc, 50, 200);
+      }
+      
+      setupCamera() {
+        const container = document.getElementById('viewer-container');
+        this.camera = new THREE.PerspectiveCamera(
+          50, 
+          container.clientWidth / container.clientHeight, 
+          0.1, 
+          1000
+        );
+        this.camera.position.set(15, 10, 15);
+      }
+      
+      setupRenderer() {
+        this.renderer = new THREE.WebGLRenderer({ 
+          antialias: true, 
+          alpha: true,
+          powerPreference: "high-performance"
+        });
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.0;
+        
+        const container = document.getElementById('viewer-container');
+        container.appendChild(this.renderer.domElement);
+      }
+      
+      setupControls() {
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.05;
+        this.controls.minDistance = 5;
+        this.controls.maxDistance = 100;
+        this.controls.maxPolarAngle = Math.PI * 0.9;
+        
+        // Mobile-optimized controls
+        this.controls.touches = {
+          ONE: THREE.TOUCH.ROTATE,
+          TWO: THREE.TOUCH.DOLLY_PAN
+        };
+        this.controls.enableKeys = false;
+      }
+      
+      setupLights() {
+        // Ambient light
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        this.scene.add(ambientLight);
+        
+        // Directional light
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(50, 50, 50);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        directionalLight.shadow.camera.near = 0.5;
+        directionalLight.shadow.camera.far = 200;
+        directionalLight.shadow.camera.left = -50;
+        directionalLight.shadow.camera.right = 50;
+        directionalLight.shadow.camera.top = 50;
+        directionalLight.shadow.camera.bottom = -50;
+        this.scene.add(directionalLight);
+        
+        // Fill light
+        const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        fillLight.position.set(-20, 20, -20);
+        this.scene.add(fillLight);
+      }
+      
+      loadModel() {
+        const loader = new THREE.GLTFLoader();
+        
+        loader.load(
+          this.modelUrl,
+          (gltf) => {
+            this.model = gltf.scene;
+            
+            // Store original materials for wireframe toggle
+            this.model.traverse((child) => {
+              if (child.isMesh) {
+                this.originalMaterials.set(child, child.material.clone());
+                child.castShadow = true;
+                child.receiveShadow = true;
+              }
+            });
+            
+            this.scene.add(this.model);
+            
+            // Center and scale the model
+            const box = new THREE.Box3().setFromObject(this.model);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            
+            this.model.position.sub(center);
+            const scale = 20 / maxDim;
+            this.model.scale.setScalar(scale);
+            
+            // Position camera optimally
+            this.camera.position.set(15, 10, 15);
+            this.controls.target.copy(this.model.position);
+            this.controls.update();
+            
+            // Hide loading, show controls
+            document.getElementById('loading-message').style.display = 'none';
+            document.getElementById('model-label').style.display = 'block';
+            document.getElementById('controls').style.display = 'flex';
+            document.getElementById('download-btn').style.display = 'flex';
+            
+            console.log('Mobile GLB model loaded successfully');
+          },
+          (progress) => {
+            const percent = (progress.loaded / progress.total * 100).toFixed(0);
+            document.getElementById('loading-message').textContent = `Loading 3D Model... ${percent}%`;
+          },
+          (error) => {
+            console.error('Error loading GLB model:', error);
+            document.getElementById('loading-message').innerHTML = 
+              '<div class="error-message">Failed to load 3D model</div>';
+          }
+        );
+      }
+      
+      animate() {
+        requestAnimationFrame(() => this.animate());
+        
+        if (this.controls) {
+          this.controls.update();
+        }
+        
+        if (this.renderer && this.scene && this.camera) {
+          this.renderer.render(this.scene, this.camera);
+        }
+      }
+      
+      onWindowResize() {
+        if (!this.camera || !this.renderer) return;
+        
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+      
+      resetView() {
+        if (this.model && this.controls) {
+          this.camera.position.set(15, 10, 15);
+          this.controls.target.copy(this.model.position);
+          this.controls.update();
+        }
+      }
+      
+      toggleWireframe() {
+        if (!this.model) return;
+        
+        this.isWireframe = !this.isWireframe;
+        
+        this.model.traverse((child) => {
+          if (child.isMesh) {
+            if (this.isWireframe) {
+              child.material = new THREE.MeshBasicMaterial({
+                color: 0x002FA7,
+                wireframe: true
+              });
+            } else {
+              child.material = this.originalMaterials.get(child);
+            }
+          }
+        });
+      }
+    }
+    
+    // Global functions for controls
+    let viewer = null;
+    
+    function resetView() {
+      if (viewer) viewer.resetView();
+    }
+    
+    function toggleWireframe() {
+      if (viewer) viewer.toggleWireframe();
+    }
+    
+    function downloadModel() {
+      const link = document.createElement('a');
+      link.href = '../models/glb/sample-building.glb';
+      link.download = 'sample-building.glb';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    
+    // Initialize viewer when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      viewer = new MobileSingleGLBViewer();
+    });
+  </script>
+</body>
+</html>
