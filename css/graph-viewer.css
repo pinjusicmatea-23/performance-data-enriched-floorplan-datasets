@@ -17,9 +17,98 @@
     position: relative;
     overflow: hidden;
     margin-bottom: 1rem;
-
     display: flex;
     flex-direction: column;
+}
+
+/* Mobile responsive graph viewer */
+@media (max-width: 768px) {
+    .graphs-section {
+        padding: 2rem 0;
+    }
+    
+    .graphs-section .container {
+        padding: 0 1rem;
+        width: 100vw;
+        max-width: none;
+    }
+    
+    .graphs-section h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    .graphs-section p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .graph-container {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .graph-viewer {
+        height: 50vh;
+        min-height: 300px;
+        max-height: 400px;
+        border-radius: 8px;
+        margin: 0;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Scale iframe content for mobile viewing */
+    .graph-iframe {
+        width: 250% !important;
+        height: 250% !important;
+        transform: scale(0.4);
+        transform-origin: 0 0;
+        border: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    
+    /* Mobile graph controls */
+    .graph-selection-controls {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .graph-categories {
+        gap: 0.5rem;
+        justify-content: center;
+    }
+    
+    .category-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+        min-width: 60px;
+        text-align: center;
+    }
+    
+    .graph-search input {
+        padding: 0.75rem;
+        font-size: 1rem;
+        border-radius: 6px;
+    }
+    
+    .graph-placeholder {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .graph-placeholder ul {
+        font-size: 0.7rem;
+        text-align: left;
+        max-width: 280px;
+    }
+    
+    .graph-placeholder li {
+        margin-bottom: 0.5rem;
+    }
 }
 
 .graph-placeholder {

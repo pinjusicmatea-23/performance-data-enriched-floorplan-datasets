@@ -57,6 +57,17 @@ class GraphViewer {
         iframe.style.height = '100%';
         iframe.style.border = 'none';
 
+        // Simple mobile iframe setup with CSS-based repositioning
+        iframe.onload = function() {
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile) {
+                iframe.classList.add('mobile-graph');
+            }
+            
+            console.log('Graph loaded successfully for mobile:', isMobile);
+        };
+
         let timeoutId;
         let isLoaded = false;
 
