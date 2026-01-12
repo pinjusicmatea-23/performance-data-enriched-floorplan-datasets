@@ -182,7 +182,7 @@ button, input, select, textarea, .btn, .dropdown-toggle {
         
         /* Contact page mobile styles */
         .contact-page-section {
-            padding: 5rem 0 2rem 0;
+            padding: 6rem 0 2rem 0;
         }
         
         .contact-page-section .container {
@@ -193,6 +193,15 @@ button, input, select, textarea, .btn, .dropdown-toggle {
         
         .contact-page-section h1 {
             display: none;
+        }
+        
+        /* Add extra spacing to contact items */
+        .contact-item {
+            margin-top: 1rem;
+        }
+        
+        .contact-item:first-child {
+            margin-top: 1.5rem;
         }
         
         /* Hide About page header on mobile */
