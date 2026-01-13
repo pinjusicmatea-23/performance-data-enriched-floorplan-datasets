@@ -259,27 +259,27 @@
                     <div class="download-item">
                         <h3>CSV Dataset</h3>
                         <p>Complete dataset in CSV format for data analysis and research.</p>
-                        <a href="datasets/csv-dataset.zip" class="btn btn-download" download>Download ZIP</a>
+                        <button class="btn btn-download" onclick="downloadWithReadme('datasets/csv.zip')">Download ZIP</button>
                     </div>
                     <div class="download-item">
                         <h3>Documentation</h3>
                         <p>Data dictionary and usage guidelines.</p>
-                        <a href="datasets/documentation.pdf" class="btn btn-download" download>Download PDF</a>
+                        <button class="btn btn-download" onclick="downloadWithReadme('datasets/documentation.pdf')">Download PDF</button>
                     </div>
                     <div class="download-item">
                         <h3>Swiss Dwellings</h3>
                         <p>Original Swiss residential building dataset used as foundation.</p>
-                        <a href="datasets/swiss-dwellings-v3.0.0.zip" class="btn btn-download" download>Download ZIP</a>
+                        <button class="btn btn-download" onclick="downloadWithReadme('datasets/swiss-dwellings-v3.0.0.zip')">Download ZIP</button>
                     </div>
                     <div class="download-item">
                         <h3>IFC</h3>
                         <p>3D building information models in Industry Foundation Classes format.</p>
-                        <a href="datasets/ifc.zip" class="btn btn-download" download>Download ZIP</a>
+                        <button class="btn btn-download" onclick="downloadWithReadme('datasets/ifc.zip')">Download ZIP</button>
                     </div>
                     <div class="download-item">
                         <h3>Graphs</h3>
                         <p>Interactive adjacency graphs and network visualizations.</p>
-                        <a href="datasets/graphs.zip" class="btn btn-download" download>Download ZIP</a>
+                        <button class="btn btn-download" onclick="downloadWithReadme('datasets/graphs.zip')">Download ZIP</button>
                     </div>
                 </div>
             </div>
@@ -446,7 +446,8 @@
         // Function to download all dataset files
         function downloadFullDataset() {
             const files = [
-                'datasets/csv-dataset.zip',
+                'datasets/readme.txt',
+                'datasets/csv.zip',
                 'datasets/documentation.pdf',
                 'datasets/swiss-dwellings-v3.0.0.zip',
                 'datasets/ifc.zip',
@@ -464,6 +465,27 @@
                     document.body.removeChild(link);
                 }, index * 500); // 500ms delay between downloads
             });
+        }
+        
+        // Function to download individual dataset with README
+        function downloadWithReadme(datasetFile) {
+            // Download README first
+            const readmeLink = document.createElement('a');
+            readmeLink.href = 'datasets/readme.txt';
+            readmeLink.download = '';
+            document.body.appendChild(readmeLink);
+            readmeLink.click();
+            document.body.removeChild(readmeLink);
+            
+            // Download the dataset file after a short delay
+            setTimeout(() => {
+                const datasetLink = document.createElement('a');
+                datasetLink.href = datasetFile;
+                datasetLink.download = '';
+                document.body.appendChild(datasetLink);
+                datasetLink.click();
+                document.body.removeChild(datasetLink);
+            }, 300);
         }
     </script>
     
