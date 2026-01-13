@@ -214,6 +214,17 @@
             cursor: not-allowed;
         }
         
+        /* Ensure hero buttons always maintain proper styling */
+        .hero-buttons .btn-primary {
+            background: #002FA7 !important;
+            cursor: pointer !important;
+            opacity: 1 !important;
+        }
+        
+        .hero-buttons .btn-primary:hover {
+            background: #0056b3 !important;
+        }
+        
         /* Reduce animations on slow devices */
         @media (prefers-reduced-motion: reduce) {
             .scroll-animate {
@@ -273,7 +284,7 @@
                     <div class="hero-buttons">
                         <a href="#graphs" class="btn btn-primary">View Visualizations</a>
                         <a href="#ifc-models" class="btn btn-primary">Explore 3D Models</a>
-                        <a href="#download" class="btn btn-secondary">Download Dataset</a>
+                        <a href="#download" class="btn btn-primary">Download Dataset</a>
                     </div>
                 </div>
             </div>
@@ -564,8 +575,6 @@
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 Joaquín Broquedis, Marco Durand, Matea Pinjušić. Master's Thesis Project - IAAC. All rights reserved.</p>
-            <a href="https://docs.google.com/spreadsheets/d/1r_WDwEXjeS3pzYL9HTZsYTh2lx9o3PX4FQh3pCBjVus/edit" target="_blank" style="background: transparent; color: #666; border: none; padding: 0.25rem; font-size: 0.7rem; text-decoration: none; opacity: 0.3; float: right;" title="View collected data" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='0.3'">📊</a>
-            <button onclick="testDataSaving()" style="background: #ff6b6b; color: white; border: none; padding: 0.25rem 0.5rem; font-size: 0.7rem; cursor: pointer; margin-left: 10px; border-radius: 3px;" title="Test Google Sheets integration">🧪 Test</button>
         </div>
     </footer>
 
@@ -642,12 +651,20 @@
         
         // Function to update download button state
         function updateDownloadButton() {
+            // Only run if modal elements exist and modal is active
+            const modal = document.getElementById('downloadModal');
+            if (!modal || !modal.classList.contains('active')) {
+                return;
+            }
+            
             const licenseChecked = document.getElementById('licenseAgree').checked;
             const emailFilled = document.getElementById('userEmail').value.trim() !== '';
             const professionFilled = document.getElementById('userProfession').value.trim() !== '';
             
-            const downloadBtn = document.querySelector('.btn-primary');
-            downloadBtn.disabled = !(licenseChecked && emailFilled && professionFilled);
+            const downloadBtn = document.querySelector('#downloadModal .btn-primary');
+            if (downloadBtn) {
+                downloadBtn.disabled = !(licenseChecked && emailFilled && professionFilled);
+            }
         }
         
         // Function to save user data to Google Sheets
