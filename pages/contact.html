@@ -7,6 +7,56 @@
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/menu.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Team Images - Mobile at top */
+        .team-images-mobile-top {
+            padding: 0.5rem 0;
+            padding-top: 80px; /* Add space for navigation bar */
+            background: white;
+            display: none; /* Hidden on desktop */
+        }
+        
+        /* Team Images - Desktop below heading */
+        .team-images-desktop {
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .team-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+        }
+        
+        /* Desktop: show web image below heading, hide mobile section */
+        .team-image-web {
+            display: block;
+        }
+        
+        .team-image-mobile {
+            display: none;
+        }
+        
+        /* Mobile: show mobile section at top, hide desktop image */
+        @media (max-width: 768px) {
+            .team-images-mobile-top {
+                display: block;
+            }
+            
+            .team-images-desktop {
+                display: none;
+            }
+            
+            .team-image-web {
+                display: none;
+            }
+            
+            .team-image-mobile {
+                display: block;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header with hamburger menu -->
@@ -33,10 +83,22 @@
     </header>
 
     <main>
+        <!-- Team Images Section - Mobile Only (at top) -->
+        <section class="team-images-mobile-top">
+            <div class="container">
+                <img src="../images/team_mobile.png" alt="Team Photo" class="team-image team-image-mobile" loading="lazy">
+            </div>
+        </section>
+
         <!-- Contact Section -->
         <section class="contact-page-section">
             <div class="container">
                 <h1>Contact & Collaboration</h1>
+                
+                <!-- Team Images Section (visible on desktop only here) -->
+                <div class="team-images-desktop">
+                    <img src="../images/team_web.png" alt="Team Photo" class="team-image team-image-web" loading="lazy">
+                </div>
                 
                 <!-- Contact Information -->
                 <div class="contact-info-section">
