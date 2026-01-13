@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/sitemap.xml
