@@ -1,5 +1,17 @@
 User-agent: *
 Allow: /
+Allow: /pages/
+Allow: /viewers/
+Allow: /datasets/
+Allow: /graphs/
+Allow: /images/
+Allow: /css/
+Allow: /js/
+
+# Disallow unnecessary files
+Disallow: *.zip
+Disallow: *.ifc
+Disallow: /models/
 
 # Sitemap location
 Sitemap: https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/sitemap.xml
