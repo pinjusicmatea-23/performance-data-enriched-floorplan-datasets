@@ -39,6 +39,181 @@
             transition-delay: 0.45s;
         }
         
+        /* Download Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease-out;
+        }
+        
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: #002FA7;
+            font-size: 1.5rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #666;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            color: #000;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .license-agreement, .user-info {
+            margin-bottom: 1.5rem;
+        }
+        
+        .license-agreement h3, .user-info h3 {
+            color: #333;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+        
+        .agreement-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #002FA7;
+        }
+        
+        .agreement-checkbox input[type="checkbox"] {
+            margin-top: 0.2rem;
+            transform: scale(1.2);
+        }
+        
+        .agreement-checkbox label {
+            font-weight: 500;
+            line-height: 1.4;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e5e5;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #002FA7;
+            box-shadow: 0 0 0 3px rgba(0, 47, 167, 0.1);
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid #e5e5e5;
+            background: #f8f9fa;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-primary {
+            background: #002FA7;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
         /* Reduce animations on slow devices */
         @media (prefers-reduced-motion: reduce) {
             .scroll-animate {
@@ -389,6 +564,8 @@
     <footer class="footer">
         <div class="container">
             <p>&copy; 2025 Joaquín Broquedis, Marco Durand, Matea Pinjušić. Master's Thesis Project - IAAC. All rights reserved.</p>
+            <a href="https://docs.google.com/spreadsheets/d/1r_WDwEXjeS3pzYL9HTZsYTh2lx9o3PX4FQh3pCBjVus/edit" target="_blank" style="background: transparent; color: #666; border: none; padding: 0.25rem; font-size: 0.7rem; text-decoration: none; opacity: 0.3; float: right;" title="View collected data" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='0.3'">📊</a>
+            <button onclick="testDataSaving()" style="background: #ff6b6b; color: white; border: none; padding: 0.25rem 0.5rem; font-size: 0.7rem; cursor: pointer; margin-left: 10px; border-radius: 3px;" title="Test Google Sheets integration">🧪 Test</button>
         </div>
     </footer>
 
@@ -443,8 +620,131 @@
             animateElements.forEach(el => observer.observe(el));
         });
         
-        // Function to download all dataset files
-        function downloadFullDataset() {
+        // Download modal management
+        let currentDownloadAction = null;
+        
+        // Function to show the download modal
+        function showDownloadModal(downloadFunction, ...args) {
+            currentDownloadAction = { function: downloadFunction, args: args };
+            document.getElementById('downloadModal').classList.add('active');
+            // Reset form
+            document.getElementById('licenseAgree').checked = false;
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userProfession').value = '';
+            updateDownloadButton();
+        }
+        
+        // Function to close the download modal
+        function closeDownloadModal() {
+            document.getElementById('downloadModal').classList.remove('active');
+            currentDownloadAction = null;
+        }
+        
+        // Function to update download button state
+        function updateDownloadButton() {
+            const licenseChecked = document.getElementById('licenseAgree').checked;
+            const emailFilled = document.getElementById('userEmail').value.trim() !== '';
+            const professionFilled = document.getElementById('userProfession').value.trim() !== '';
+            
+            const downloadBtn = document.querySelector('.btn-primary');
+            downloadBtn.disabled = !(licenseChecked && emailFilled && professionFilled);
+        }
+        
+        // Function to save user data to Google Sheets
+        async function saveUserData(email, profession, downloadType) {
+            const timestamp = new Date().toLocaleString();
+            
+            // Google Sheets configuration
+            const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxInpotaI3Jn_3s5pBEPmtTwGztp4KFC5vlkNytVQ_0f5hTaYYi6W4v_o6ML8WHaba7/exec';
+            
+            const data = {
+                timestamp: timestamp,
+                email: email,
+                profession: profession,
+                downloadType: downloadType
+            };
+            
+            console.log('Attempting to save user data to Google Sheets:', data);
+            
+            try {
+                const response = await fetch(SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Required for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                // Note: due to no-cors mode, we can't read the response
+                // but the data should still be sent to Google Sheets
+                console.log('Data sent to Google Sheets successfully');
+                
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                // Fallback: save to localStorage
+                const csvLine = `"${timestamp}","${email}","${profession}","${downloadType}"\n`;
+                const existingData = localStorage.getItem('downloadData') || 'timestamp,email,profession,download_type\n';
+                const updatedData = existingData + csvLine;
+                localStorage.setItem('downloadData', updatedData);
+                console.log('Data saved to localStorage as fallback');
+            }
+        }
+        
+        // Function to download the CSV file with all collected data
+        function downloadCollectedData() {
+            const link = document.createElement('a');
+            link.href = 'datasets/downloads.csv';
+            link.download = 'downloads.csv';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Test function to verify data saving is working
+        function testDataSaving() {
+            console.log('Testing Google Sheets data saving...');
+            saveUserData('test@example.com', 'Test User', 'Test Download');
+            alert('Test data sent to Google Sheets! Check the console for details.');
+        }
+        
+        // Function to proceed with download after agreement
+        function proceedWithDownload() {
+            const email = document.getElementById('userEmail').value.trim();
+            const profession = document.getElementById('userProfession').value.trim();
+            const licenseAgreed = document.getElementById('licenseAgree').checked;
+            
+            if (!licenseAgreed || !email || !profession) {
+                alert('Please complete all fields and agree to the license terms.');
+                return;
+            }
+            
+            // Determine download type
+            let downloadType = 'Unknown';
+            if (currentDownloadAction.function === downloadFullDatasetDirect) {
+                downloadType = 'Full Dataset';
+            } else if (currentDownloadAction.function === downloadWithReadmeDirect) {
+                downloadType = 'Individual Dataset';
+            }
+            
+            // Save user data
+            saveUserData(email, profession, downloadType);
+            
+            // Execute the download
+            currentDownloadAction.function(...currentDownloadAction.args);
+            
+            // Close modal
+            closeDownloadModal();
+            
+            // Show thank you message
+            setTimeout(() => {
+                alert('Thank you! Your download has started. Please cite this dataset according to the CC BY 4.0 license terms.');
+            }, 500);
+        }
+
+        // Original download functions (now called directly after modal agreement)
+        function downloadFullDatasetDirect() {
             const files = [
                 'datasets/readme.txt',
                 'datasets/csv.zip',
@@ -466,9 +766,9 @@
                 }, index * 500); // 500ms delay between downloads
             });
         }
-        
+
         // Function to download individual dataset with README
-        function downloadWithReadme(datasetFile) {
+        function downloadWithReadmeDirect(datasetFile) {
             // Download README first
             const readmeLink = document.createElement('a');
             readmeLink.href = 'datasets/readme.txt';
@@ -487,7 +787,75 @@
                 document.body.removeChild(datasetLink);
             }, 300);
         }
+        
+        // Public-facing download functions that show modal first
+        function downloadFullDataset() {
+            showDownloadModal(downloadFullDatasetDirect);
+        }
+        
+        function downloadWithReadme(datasetFile) {
+            showDownloadModal(downloadWithReadmeDirect, datasetFile);
+        }
+        
+        // Add event listeners for form validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const licenseCheckbox = document.getElementById('licenseAgree');
+            const emailInput = document.getElementById('userEmail');
+            const professionInput = document.getElementById('userProfession');
+            
+            if (licenseCheckbox && emailInput && professionInput) {
+                [licenseCheckbox, emailInput, professionInput].forEach(element => {
+                    element.addEventListener('change', updateDownloadButton);
+                    element.addEventListener('input', updateDownloadButton);
+                });
+            }
+        });
+        
+        // Close modal when clicking outside content
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('downloadModal');
+            if (event.target === modal) {
+                closeDownloadModal();
+            }
+        });
     </script>
+
+    <!-- Download Modal -->
+    <div id="downloadModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Download Agreement</h2>
+                <button class="modal-close" onclick="closeDownloadModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="license-agreement">
+                    <h3>License Agreement</h3>
+                    <p>This dataset is available under <strong>CC BY 4.0 Creative Commons Attribution 4.0 International License</strong>. You may use, share, and adapt the data for any purpose, including commercial use, provided you give appropriate credit to the original creators.</p>
+                    
+                    <div class="agreement-checkbox">
+                        <input type="checkbox" id="licenseAgree" required>
+                        <label for="licenseAgree">I agree to the CC BY 4.0 license terms and will provide proper attribution when using this dataset.</label>
+                    </div>
+                </div>
+                
+                <div class="user-info">
+                    <h3>User Information</h3>
+                    <div class="form-group">
+                        <label for="userEmail">Email Address:</label>
+                        <input type="email" id="userEmail" required placeholder="your.email@domain.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="userProfession">Profession/Field:</label>
+                        <input type="text" id="userProfession" required placeholder="e.g., Researcher, Architect, Student">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDownloadModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="proceedWithDownload()">Agree & Download</button>
+            </div>
+        </div>
+    </div>
     
     <!-- Menu functionality -->
     <script src="js/menu.js"></script>
