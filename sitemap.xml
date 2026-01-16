@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/images/logo3.jpg</image:loc>
+      <image:title>Archiset Logo - Architectural Dataset Platform</image:title>
+      <image:caption>Archiset platform logo for architectural datasets and building performance data</image:caption>
+    </image:image>
   </url>
   <url>
     <loc>https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/pages/about.html</loc>
