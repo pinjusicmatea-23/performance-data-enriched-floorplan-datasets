@@ -808,12 +808,12 @@
         // Original download functions (now called directly after modal agreement)
         function downloadFullDatasetDirect() {
             const files = [
-                'datasets/readme.txt',
-                'datasets/csv.zip',
-                'datasets/documentation.pdf',
-                'datasets/swiss-dwellings-v3.0.0.zip',
-                'datasets/ifc.zip',
-                'datasets/graphs.zip'
+                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/readme.txt',
+                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/csv.zip',
+                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/documentation.pdf',
+                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/swiss-dwellings-v3.0.0.zip',
+                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc.zip',
+                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/graphs.zip'
             ];
             
             // Download each file with a small delay to prevent browser blocking
@@ -833,7 +833,7 @@
         function downloadWithReadmeDirect(datasetFile) {
             // Download README first
             const readmeLink = document.createElement('a');
-            readmeLink.href = 'datasets/readme.txt';
+            readmeLink.href = 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/readme.txt';
             readmeLink.download = '';
             document.body.appendChild(readmeLink);
             readmeLink.click();
@@ -842,7 +842,12 @@
             // Download the dataset file after a short delay
             setTimeout(() => {
                 const datasetLink = document.createElement('a');
-                datasetLink.href = datasetFile;
+                // Convert local paths to GitHub raw URLs for all dataset files
+                let fileUrl = datasetFile;
+                if (datasetFile.startsWith('datasets/')) {
+                    fileUrl = `https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/${datasetFile}`;
+                }
+                datasetLink.href = fileUrl;
                 datasetLink.download = '';
                 document.body.appendChild(datasetLink);
                 datasetLink.click();
