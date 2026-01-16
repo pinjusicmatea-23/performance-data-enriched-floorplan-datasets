@@ -504,7 +504,7 @@
                     </div>
                     <div class="download-item">
                         <h3>IFC</h3>
-                        <p>3D building information models in Industry Foundation Classes format.</p>
+                        <p>3D building information models in Industry Foundation Classes format (3 parts: ifc1.zip, ifc2.zip, ifc3.zip).</p>
                         <button class="btn btn-download" onclick="downloadWithReadme('datasets/ifc.zip')">Download ZIP</button>
                     </div>
                     <div class="download-item">
@@ -812,7 +812,9 @@
                 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/csv.zip',
                 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/documentation.pdf',
                 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/swiss-dwellings-v3.0.0.zip',
-                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc.zip',
+                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc1.zip',
+                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc2.zip',
+                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc3.zip',
                 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/graphs.zip'
             ];
             
@@ -839,20 +841,41 @@
             readmeLink.click();
             document.body.removeChild(readmeLink);
             
-            // Download the dataset file after a short delay
-            setTimeout(() => {
-                const datasetLink = document.createElement('a');
-                // Convert local paths to GitHub raw URLs for all dataset files
-                let fileUrl = datasetFile;
-                if (datasetFile.startsWith('datasets/')) {
-                    fileUrl = `https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/${datasetFile}`;
-                }
-                datasetLink.href = fileUrl;
-                datasetLink.download = '';
-                document.body.appendChild(datasetLink);
-                datasetLink.click();
-                document.body.removeChild(datasetLink);
-            }, 300);
+            // Handle special case for IFC files (split into multiple parts)
+            if (datasetFile === 'datasets/ifc.zip') {
+                const ifcFiles = [
+                    'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc1.zip',
+                    'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc2.zip',
+                    'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc3.zip'
+                ];
+                
+                // Download each IFC part with delays
+                ifcFiles.forEach((fileUrl, index) => {
+                    setTimeout(() => {
+                        const datasetLink = document.createElement('a');
+                        datasetLink.href = fileUrl;
+                        datasetLink.download = '';
+                        document.body.appendChild(datasetLink);
+                        datasetLink.click();
+                        document.body.removeChild(datasetLink);
+                    }, 300 + (index * 500)); // Start after README, then 500ms between each part
+                });
+            } else {
+                // Download the dataset file after a short delay
+                setTimeout(() => {
+                    const datasetLink = document.createElement('a');
+                    // Convert local paths to GitHub raw URLs for all dataset files
+                    let fileUrl = datasetFile;
+                    if (datasetFile.startsWith('datasets/')) {
+                        fileUrl = `https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/${datasetFile}`;
+                    }
+                    datasetLink.href = fileUrl;
+                    datasetLink.download = '';
+                    document.body.appendChild(datasetLink);
+                    datasetLink.click();
+                    document.body.removeChild(datasetLink);
+                }, 300);
+            }
         }
         
         // Public-facing download functions that show modal first
