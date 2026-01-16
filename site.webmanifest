@@ -1,0 +1,21 @@
+{
+    "name": "Archiset - Architectural Dataset Platform",
+    "short_name": "Archiset",
+    "description": "Performance Data-Enriched Floorplan Datasets",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#3b82f6",
+    "icons": [
+        {
+            "src": "favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        },
+        {
+            "src": "favicon-192.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml"
+        }
+    ]
+}
