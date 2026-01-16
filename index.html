@@ -3,37 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archiset - Performance Data-Enriched Floorplan Datasets | Architectural Research</title>
+    <title>Archiset | Architectural Dataset Platform - Performance Data-Enriched Floorplan Datasets</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Explore and download comprehensive architectural datasets with performance data, IFC models, and interactive visualizations. Free research datasets for architectural analysis and machine learning.">
-    <meta name="keywords" content="architectural datasets, building performance data, IFC models, floorplan analysis, architectural research, machine learning datasets, building information modeling, IAAC">
+    <meta name="description" content="Archiset is the leading platform for architectural datasets. Explore and download comprehensive performance data, IFC models, and interactive visualizations. Free research datasets for architectural analysis and machine learning.">
+    <meta name="keywords" content="archiset, archiset platform, architectural datasets, building performance data, IFC models, floorplan analysis, architectural research, machine learning datasets, building information modeling, IAAC">
     <meta name="author" content="Joaquín Broquedis, Marco Durand, Matea Pinjušić - IAAC">
     <meta name="robots" content="index, follow">
     
+    <!-- Additional SEO Meta Tags -->
+    <meta property="og:site_name" content="Archiset">
+    <meta name="application-name" content="Archiset">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="msapplication-navbutton-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-title" content="Archiset">
+    
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Archiset - Performance Data-Enriched Floorplan Datasets">
-    <meta property="og:description" content="Explore and download comprehensive architectural datasets with performance data, IFC models, and interactive visualizations.">
+    <meta property="og:title" content="Archiset | Architectural Dataset Platform">
+    <meta property="og:description" content="Archiset is the leading platform for architectural datasets. Explore and download comprehensive performance data, IFC models, and interactive visualizations.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/">
+    <meta property="og:image" content="https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/images/logo3.jpg">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Archiset - Performance Data-Enriched Floorplan Datasets">
-    <meta name="twitter:description" content="Explore and download comprehensive architectural datasets with performance data, IFC models, and interactive visualizations.">
+    <meta name="twitter:title" content="Archiset | Architectural Dataset Platform">
+    <meta name="twitter:description" content="Archiset is the leading platform for architectural datasets. Explore and download comprehensive performance data, IFC models, and interactive visualizations.">
+    <meta name="twitter:image" content="https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/images/logo3.jpg">>
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="images/logo3.jpg">
+    <link rel="icon" type="image/jpeg" href="images/logo3.jpg">
+    <link rel="shortcut icon" href="images/logo3.jpg">
+    <link rel="apple-touch-icon" href="images/logo3.jpg">
     
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Dataset",
-      "name": "Archiset - Performance Data-Enriched Floorplan Datasets",
-      "description": "Comprehensive architectural datasets with performance data, IFC building models, and interactive visualizations for research and analysis.",
+      "@type": ["Dataset", "SoftwareApplication"],
+      "name": "Archiset",
+      "alternateName": ["Archiset Platform", "Archiset Dataset", "Archiset - Performance Data-Enriched Floorplan Datasets"],
+      "description": "Archiset is a comprehensive architectural dataset platform providing performance data, IFC building models, and interactive visualizations for research and analysis.",
       "url": "https://pinjusicmatea-23.github.io/performance-data-enriched-floorplan-datasets/",
-      "keywords": "architectural datasets, building performance data, IFC models, floorplan analysis, architectural research",
+      "keywords": "archiset, archiset platform, architectural datasets, building performance data, IFC models, floorplan analysis, architectural research",
+      "applicationCategory": "Architecture",
+      "applicationSubCategory": "Dataset Platform",
+      "operatingSystem": "Web Browser",
       "creator": {
         "@type": "Organization",
         "name": "Institute for Advanced Architecture of Catalonia (IAAC)",
@@ -278,6 +297,99 @@
                 transform: translateY(0);
             }
         }
+        
+        /* Archiset Intro Section */
+        .archiset-intro-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 4rem 0;
+            margin: 0;
+        }
+        
+        .archiset-intro-section h2 {
+            color: #002FA7;
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .archiset-description {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            color: #374151;
+            font-weight: 400;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1f2937;
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-brand h3 {
+            color: white;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .footer-brand p {
+            color: #d1d5db;
+            line-height: 1.6;
+            margin-top: 0.5rem;
+        }
+        
+        .footer-links h4, .footer-info h4 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .footer-links a {
+            display: block;
+            color: #d1d5db;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #3b82f6;
+        }
+        
+        .footer-info p {
+            color: #d1d5db;
+            line-height: 1.5;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 1rem;
+            text-align: center;
+        }
+        
+        .footer-bottom p {
+            color: #9ca3af;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -324,8 +436,8 @@
             <div class="hero-overlay"></div>
             <div class="hero-content">
                 <div class="container">
-                    <h1>Explore Architectural Data</h1>
-                    <p>Discover and analyze comprehensive architectural datasets with interactive visualizations and downloadable resources.</p>
+                    <h1>Welcome to Archiset</h1>
+                    <p>The comprehensive platform for architectural datasets. Discover and analyze performance data with interactive visualizations and downloadable resources.</p>
                     <div class="hero-buttons">
                         <a href="#graphs" class="btn btn-primary">View Visualizations</a>
                         <a href="#ifc-models" class="btn btn-primary">Explore 3D Models</a>
@@ -335,11 +447,19 @@
             </div>
         </section>
 
+        <!-- About Archiset Section -->
+        <section class="archiset-intro-section">
+            <div class="container">
+                <h2 class="scroll-animate">What is Archiset?</h2>
+                <p class="archiset-description scroll-animate">Archiset is a pioneering architectural dataset platform that bridges the gap between building design and performance analysis. Our platform provides researchers, architects, and data scientists with unprecedented access to enriched architectural data, combining IFC building models with comprehensive performance metrics and interactive visualization tools.</p>
+            </div>
+        </section>
+
         <!-- Project Information Section -->
         <section id="project-info" class="project-info-section">
             <div class="container">
-                <h2 class="scroll-animate">Project Workflow</h2>
-                <p class="workflow-intro scroll-animate">This research project presents a comprehensive methodology for enriching architectural datasets with performance data. Our workflow integrates IFC building models with energy and daylight analysis to create enhanced datasets for machine learning and architectural research in multiple formats.</p>
+                <h2 class="scroll-animate">Archiset Workflow</h2>
+                <p class="workflow-intro scroll-animate">Archiset implements a comprehensive methodology for enriching architectural datasets with performance data. Our platform workflow integrates IFC building models with energy and daylight analysis to create enhanced datasets for machine learning and architectural research in multiple formats.</p>
                 
                 <!-- Full-width Workflow Image -->
                 <div class="workflow-image-fullwidth scroll-animate">
@@ -909,6 +1029,36 @@
             }
         });
     </script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <img src="images/logo3.jpg" alt="Archiset Logo" loading="lazy" style="height: 30px; margin-right: 10px;">
+                        <h3>Archiset</h3>
+                    </div>
+                    <p>The comprehensive platform for architectural datasets. Archiset provides researchers, architects, and data scientists with unprecedented access to enriched architectural data.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Platform</h4>
+                    <a href="#home">Home</a>
+                    <a href="pages/about.html">About Archiset</a>
+                    <a href="#download">Download Dataset</a>
+                    <a href="pages/contact.html">Contact</a>
+                </div>
+                <div class="footer-info">
+                    <h4>Research</h4>
+                    <p>Institute for Advanced Architecture of Catalonia (IAAC)<br>
+                    Master in Advanced Computational Design for Architecture</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Archiset Platform. Licensed under CC BY 4.0.</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- Download Modal -->
     <div id="downloadModal" class="modal-overlay">
