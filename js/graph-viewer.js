@@ -171,17 +171,9 @@ class GraphViewer {
     showError(viewer, message, details = '') {
         this.clearViewer(viewer);
         const error = document.createElement('div');
-        error.className = 'graph-error';
+        error.style.cssText = 'background: white; padding: 20px; text-align: center; font-family: Arial, sans-serif;';
         error.innerHTML = `
-            <h3>Error Loading Graph</h3>
-            <p>${message}</p>
-            ${details ? `<p class="error-details">${details}</p>` : ''}
-            <p>Please check that the graph file exists in the /graphs folder</p>
-            <div class="error-actions">
-                <button class="btn" onclick="location.reload()">Refresh Page</button>
-                <button class="btn secondary" onclick="graphManager.loadRandomGraph()">Try Another Graph</button>
-                <button class="btn" onclick="graphViewer.openInNewTab('${this.lastAttemptedGraph}')">Open in New Tab</button>
-            </div>
+            <button onclick="location.reload()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Refresh Page</button>
         `;
         viewer.appendChild(error);
     }
@@ -189,25 +181,9 @@ class GraphViewer {
     showTimeoutOptions(viewer, graphName) {
         this.clearViewer(viewer);
         const timeout = document.createElement('div');
-        timeout.className = 'graph-timeout';
+        timeout.style.cssText = 'background: white; padding: 20px; text-align: center; font-family: Arial, sans-serif;';
         timeout.innerHTML = `
-            <h3>⏱️ Graph Taking Longer Than Expected</h3>
-            <p><strong>Loading:</strong> ${graphName}</p>
-            <p>This graph may contain complex visualizations. Try these options:</p>
-            <div class="timeout-options">
-                <button class="btn primary" onclick="graphViewer.openInNewTab('${graphName}')">
-                    🚀 Open in New Tab
-                </button>
-                <button class="btn secondary" onclick="graphViewer.continueWaiting('${graphName}')">
-                    ⏳ Continue Waiting
-                </button>
-                <button class="btn" onclick="graphViewer.loadGraph('${graphName}')">
-                    🔄 Retry Loading
-                </button>
-            </div>
-            <div class="timeout-info">
-                <p><small>💡 <strong>Tip:</strong> Graph files load faster when opened directly in your browser</small></p>
-            </div>
+            <button onclick="location.reload()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Refresh Page</button>
         `;
         viewer.appendChild(timeout);
         this.lastAttemptedGraph = graphName;
@@ -275,7 +251,14 @@ class GraphViewer {
         // Extended timeout (60 seconds)
         setTimeout(() => {
             if (!isLoaded) {
-                this.showError(viewer, `Extended timeout for: ${graphName}`, 'The graph file may be too large or complex for embedded viewing.');
+                const viewer = document.getElementById('graph-viewer');
+                this.clearViewer(viewer);
+                const error = document.createElement('div');
+                error.style.cssText = 'background: white; padding: 20px; text-align: center; font-family: Arial, sans-serif;';
+                error.innerHTML = `
+                    <button onclick="location.reload()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Refresh Page</button>
+                `;
+                viewer.appendChild(error);
             }
         }, 60000);
     }
