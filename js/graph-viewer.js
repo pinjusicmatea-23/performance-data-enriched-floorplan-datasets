@@ -127,8 +127,8 @@ class GraphViewer {
     }
 
     loadDefaultGraph() {
-        // Try to load a default graph if available
-        this.checkGraphAvailability();
+        // Load Building 16 as default graph
+        this.loadGraph('16_adjacency.html');
     }
 
     checkGraphAvailability() {
@@ -139,16 +139,14 @@ class GraphViewer {
             // Update placeholder with instructions
             placeholder.innerHTML = `
                 <p><strong>Interactive Graph Viewer</strong></p>
-                <p>Place your HTML graph files in the <code>/graphs</code> folder</p>
-                <p>Click the buttons below to load available graphs</p>
+                <p>Click the random button or choose from list of available graphs</p>
                 <p>Supported features:</p>
                 <ul style="text-align: left; margin-top: 1rem;">
                     <li>Pan and rotate with mouse/touch</li>
                     <li>Zoom in/out with scroll wheel</li>
                     <li>Fullscreen mode (press F key)</li>
                     <li>Reset view to default position</li>
-                </ul>
-            `;
+                </ul>`;
         }
     }
 

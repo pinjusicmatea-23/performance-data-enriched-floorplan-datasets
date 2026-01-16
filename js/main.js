@@ -24,8 +24,8 @@ function initAutoLoadGraph() {
     // Wait a moment for other scripts to load
     setTimeout(() => {
         if (typeof window.loadGraph === 'function') {
-            // Load Building 1006 graph as default
-            window.loadGraph('1006_adjacency.html');
+            // Load Building 16 graph as default
+            window.loadGraph('16_adjacency.html');
         }
     }, 1000);
 }
