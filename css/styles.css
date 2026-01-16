@@ -456,11 +456,11 @@ button.btn.secondary:hover {
     
     .hero-video-mobile {
         display: block;
-        transform: rotate(-90deg);
+        transform: rotate(90deg);
         transform-origin: center center;
         width: 100vh;
         height: 100vw;
-        top: 50%;
+        top: calc(50% + 30px);
         left: 50%;
         margin-top: -50vw;
         margin-left: -50vh;
