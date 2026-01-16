@@ -786,6 +786,10 @@ section {
     border-radius: var(--border-radius);
     text-align: center;
     transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 280px;
 }
 
 .download-item:hover {
@@ -800,6 +804,13 @@ section {
 .download-item p {
     color: var(--secondary-color);
     margin-bottom: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-start;
+}
+
+.download-item .btn {
+    margin-top: auto;
 }
 
 /* Workflow Process Section */
