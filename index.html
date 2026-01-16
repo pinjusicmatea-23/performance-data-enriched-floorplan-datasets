@@ -927,75 +927,284 @@
 
         // Original download functions (now called directly after modal agreement)
         function downloadFullDatasetDirect() {
-            const files = [
-                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/readme.txt',
-                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/csv.zip',
-                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/documentation.pdf',
-                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/swiss-dwellings-v3.0.0.zip',
-                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc1.zip',
-                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc2.zip',
-                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc3.zip',
-                'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/graphs.zip'
-            ];
-            
-            // Download each file with a small delay to prevent browser blocking
-            files.forEach((file, index) => {
-                setTimeout(() => {
-                    const link = document.createElement('a');
-                    link.href = file;
-                    link.download = '';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }, index * 500); // 500ms delay between downloads
-            });
+            // Show full dataset download panel instead of automatic downloads
+            showFullDatasetDownloadPanel();
         }
 
         // Function to download individual dataset with README
         function downloadWithReadmeDirect(datasetFile) {
-            // Download README first
-            const readmeLink = document.createElement('a');
-            readmeLink.href = 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/readme.txt';
-            readmeLink.download = '';
-            document.body.appendChild(readmeLink);
-            readmeLink.click();
-            document.body.removeChild(readmeLink);
-            
             // Handle special case for IFC files (split into multiple parts)
             if (datasetFile === 'datasets/ifc.zip') {
-                const ifcFiles = [
-                    'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc1.zip',
-                    'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc2.zip',
-                    'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc3.zip'
-                ];
+                // Show download panel with individual buttons
+                showIFCDownloadPanel();
                 
-                // Download each IFC part with delays
-                ifcFiles.forEach((fileUrl, index) => {
-                    setTimeout(() => {
-                        const datasetLink = document.createElement('a');
-                        datasetLink.href = fileUrl;
-                        datasetLink.download = '';
-                        document.body.appendChild(datasetLink);
-                        datasetLink.click();
-                        document.body.removeChild(datasetLink);
-                    }, 300 + (index * 500)); // Start after README, then 500ms between each part
-                });
             } else {
+                // Download README first using fetch method with proper filename
+                console.log('Downloading README for regular dataset...');
+                fetch('https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/readme.txt')
+                    .then(response => {
+                        console.log('README response:', response.status, response.ok);
+                        if (!response.ok) throw new Error('README not found');
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        console.log('README blob size:', blob.size);
+                        const link = document.createElement('a');
+                        const url = window.URL.createObjectURL(blob);
+                        link.href = url;
+                        link.download = 'readme.txt';
+                        link.style.display = 'none';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        window.URL.revokeObjectURL(url);
+                        console.log('README downloaded successfully');
+                    })
+                    .catch((error) => {
+                        console.error('README download failed:', error);
+                    });
+                
                 // Download the dataset file after a short delay
                 setTimeout(() => {
-                    const datasetLink = document.createElement('a');
-                    // Convert local paths to GitHub raw URLs for all dataset files
                     let fileUrl = datasetFile;
                     if (datasetFile.startsWith('datasets/')) {
                         fileUrl = `https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/${datasetFile}`;
                     }
-                    datasetLink.href = fileUrl;
-                    datasetLink.download = '';
-                    document.body.appendChild(datasetLink);
-                    datasetLink.click();
-                    document.body.removeChild(datasetLink);
-                }, 300);
+                    
+                    const filename = datasetFile.split('/').pop() || 'dataset.zip';
+                    console.log(`Downloading main file: ${filename} from ${fileUrl}`);
+                    
+                    fetch(fileUrl)
+                        .then(response => {
+                            console.log(`Main file response for ${filename}:`, response.status, response.ok);
+                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                            return response.blob();
+                        })
+                        .then(blob => {
+                            console.log(`Main file blob size for ${filename}:`, blob.size);
+                            const link = document.createElement('a');
+                            const url = window.URL.createObjectURL(blob);
+                            link.href = url;
+                            link.download = filename;
+                            link.style.display = 'none';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            window.URL.revokeObjectURL(url);
+                            console.log(`Successfully downloaded: ${filename}`);
+                        })
+                        .catch((error) => {
+                            console.error(`Main file download failed for ${filename}:`, error);
+                            console.log(`Attempting fallback download for ${filename}...`);
+                            
+                            // Fallback method - try direct download without showing error notification immediately
+                            const datasetLink = document.createElement('a');
+                            datasetLink.href = fileUrl;
+                            datasetLink.download = filename;
+                            datasetLink.target = '_blank';
+                            datasetLink.rel = 'noopener';
+                            datasetLink.style.display = 'none';
+                            document.body.appendChild(datasetLink);
+                            datasetLink.click();
+                            document.body.removeChild(datasetLink);
+                            console.log(`Fallback download initiated for: ${filename}`);
+                            
+                            // Wait a bit before showing error - the fallback might work
+                            setTimeout(() => {
+                                // Only show error if we're confident it really failed
+                                console.log(`If ${filename} didn't download, there may be a network issue.`);
+                            }, 2000);
+                        });
+                }, 1000); // Wait 1 second after README
             }
+        }
+        
+        // Show IFC download panel with individual download buttons
+        function showIFCDownloadPanel() {
+            const filesToDownload = [
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/readme.txt', filename: 'readme.txt', description: 'Documentation and usage guide' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc1.zip', filename: 'ifc1.zip', description: 'IFC files part 1 of 3' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc2.zip', filename: 'ifc2.zip', description: 'IFC files part 2 of 3' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc3.zip', filename: 'ifc3.zip', description: 'IFC files part 3 of 3' }
+            ];
+            
+            showDownloadPanel(filesToDownload, 'IFC Dataset Download', 'ifc-download-panel');
+        }
+        
+        // Show full dataset download panel with individual download buttons
+        function showFullDatasetDownloadPanel() {
+            const filesToDownload = [
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/readme.txt', filename: 'readme.txt', description: 'Documentation and usage guide' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/csv.zip', filename: 'csv.zip', description: 'CSV dataset files for analysis' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/documentation.pdf', filename: 'documentation.pdf', description: 'Complete documentation PDF' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/swiss-dwellings-v3.0.0.zip', filename: 'swiss-dwellings-v3.0.0.zip', description: 'Swiss dwellings dataset' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc1.zip', filename: 'ifc1.zip', description: 'IFC files part 1 of 3' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc2.zip', filename: 'ifc2.zip', description: 'IFC files part 2 of 3' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/ifc3.zip', filename: 'ifc3.zip', description: 'IFC files part 3 of 3' },
+                { url: 'https://github.com/pinjusicmatea-23/performance-data-enriched-floorplan-datasets/raw/main/datasets/graphs.zip', filename: 'graphs.zip', description: 'Interactive graph visualizations' }
+            ];
+            
+            showDownloadPanel(filesToDownload, 'Complete Dataset Download', 'full-dataset-panel');
+        }
+        
+        // Generic function to show download panel
+        function showDownloadPanel(filesToDownload, panelTitle, panelId) {
+            // Remove existing panel if any
+            const existingPanel = document.getElementById(panelId);
+            if (existingPanel) {
+                existingPanel.remove();
+            }
+            
+            // Create download panel
+            const panel = document.createElement('div');
+            panel.id = panelId;
+            panel.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                border: 2px solid #002FA7;
+                border-radius: 12px;
+                padding: 24px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+                z-index: 10000;
+                max-width: 450px;
+                max-height: 80vh;
+                overflow-y: auto;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            `;
+            
+            panel.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: sticky; top: 0; background: white; padding-bottom: 10px; border-bottom: 1px solid #e5e5e5;">
+                    <h3 style="margin: 0; color: #002FA7; font-size: 18px;">${panelTitle}</h3>
+                    <button onclick="document.getElementById('${panelId}').remove()" 
+                            style="background: none; border: none; font-size: 24px; color: #666; cursor: pointer; padding: 0; width: 30px; height: 30px;">&times;</button>
+                </div>
+                <p style="margin: 0 0 20px 0; color: #666; font-size: 14px;">Select and download the files you need:</p>
+                <div id="${panelId}-buttons"></div>
+            `;
+            
+            const container = panel.querySelector(`#${panelId}-buttons`);
+            
+            // Create download buttons
+            filesToDownload.forEach((file, index) => {
+                const buttonDiv = document.createElement('div');
+                buttonDiv.style.cssText = 'margin: 12px 0; padding: 12px; border: 1px solid #e5e5e5; border-radius: 8px; background: #f8f9fa;';
+                
+                buttonDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="flex: 1; margin-right: 15px;">
+                            <div style="font-weight: 600; color: #333; margin-bottom: 4px;">${file.filename}</div>
+                            <div style="font-size: 12px; color: #666;">${file.description}</div>
+                        </div>
+                        <button onclick="downloadSingleFile('${file.url}', '${file.filename}', '${panelId}-${index}')"
+                                style="background: #002FA7; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; min-width: 80px;"
+                                id="${panelId}-${index}">Download</button>
+                    </div>
+                `;
+                
+                container.appendChild(buttonDiv);
+            });
+            
+            document.body.appendChild(panel);
+        }
+        
+        // Download single file function (updated to work with both panels)
+        function downloadSingleFile(url, filename, buttonId) {
+            const button = document.getElementById(buttonId);
+            if (!button) return;
+            
+            button.textContent = 'Downloading...';
+            button.style.background = '#6c757d';
+            button.disabled = true;
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return response.blob();
+                })
+                .then(blob => {
+                    const link = document.createElement('a');
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    link.href = downloadUrl;
+                    link.download = filename;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(downloadUrl);
+                    
+                    button.textContent = 'Downloaded ✓';
+                    button.style.background = '#28a745';
+                })
+                .catch(error => {
+                    console.error(`Download failed for ${filename}:`, error);
+                    
+                    // Fallback method
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    link.target = '_blank';
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    button.textContent = 'Downloaded ✓';
+                    button.style.background = '#28a745';
+                });
+        }
+        
+        // Download all files function
+        function downloadAllFiles(panelId) {
+            const panel = document.getElementById(panelId);
+            if (!panel) return;
+            
+            const downloadButtons = panel.querySelectorAll('button[id^="' + panelId + '-"]:not([onclick*="downloadAllFiles"])');
+            
+            downloadButtons.forEach((button, index) => {
+                setTimeout(() => {
+                    if (button.textContent === 'Download') {
+                        button.click();
+                    }
+                }, index * 800); // 800ms delay between each download
+            });
+        }
+        
+        // Simple notification function
+        function showDownloadNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const backgroundColor = type === 'warning' ? '#fff3cd' : type === 'success' ? '#d4edda' : '#d1ecf1';
+            const borderColor = type === 'warning' ? '#ffeaa7' : type === 'success' ? '#c3e6cb' : '#bee5eb';
+            const textColor = type === 'warning' ? '#856404' : type === 'success' ? '#155724' : '#0c5460';
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${backgroundColor};
+                border: 1px solid ${borderColor};
+                color: ${textColor};
+                padding: 15px;
+                border-radius: 6px;
+                max-width: 350px;
+                z-index: 10000;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                font-size: 14px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 8 seconds
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.3s';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 8000);
         }
         
         // Public-facing download functions that show modal first
